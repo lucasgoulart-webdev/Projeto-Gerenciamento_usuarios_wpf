@@ -17,8 +17,8 @@
         <Label Content="Hello ADMIN_USER, welcome !" HorizontalAlignment="Left" Margin="92,97,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.533,-0.058" Foreground="#FFFAF7F7" Height="24" Width="265" FontSize="18" FontFamily="Arial Black"/>
         <ui:Button Content="Create" Margin="638,134,0,0" VerticalAlignment="Top"/>
         <ui:Button Content="Read" Margin="638,0,0,0"/>
-        <ui:Button Content="Button" Margin="638,270,0,0" VerticalAlignment="Top"/>
-        <ui:Button Content="Button" Margin="638,333,0,0" VerticalAlignment="Top"/>
+        <ui:Button Content="Update" Margin="638,270,0,0" VerticalAlignment="Top"/>
+        <ui:Button Content="Delete" Margin="638,333,0,0" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>
