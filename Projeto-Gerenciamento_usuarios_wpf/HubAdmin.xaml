@@ -1,0 +1,24 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Projeto_Gerenciamento_usuarios_wpf"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml" x:Class="Projeto_Gerenciamento_usuarios_wpf.HubAdmin"
+        mc:Ignorable="d"
+        Title="HubAdmin" Height="450" Width="800">
+    <Grid Background="#FFA599D1">
+        <Label Content="HUB--ADMIN" HorizontalAlignment="Center" Margin="0,24,0,0" VerticalAlignment="Top" FontFamily="Arial Black" FontSize="36"/>
+        <Label Content="Label" HorizontalAlignment="Left" Margin="28,0,0,0" VerticalAlignment="Center" Height="96" Width="164" Background="White"/>
+
+        <ui:TextBox HorizontalAlignment="Left" Margin="237,137,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+        <ui:TextBox HorizontalAlignment="Left" Margin="237,0,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Center" Width="120"/>
+        <ui:TextBox HorizontalAlignment="Left" Margin="237,255,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+        <Label Content="Hello ADMIN_USER, welcome !" HorizontalAlignment="Left" Margin="92,97,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.533,-0.058" Foreground="#FFFAF7F7" Height="24" Width="265" FontSize="18" FontFamily="Arial Black"/>
+        <ui:Button Content="Create" Margin="638,134,0,0" VerticalAlignment="Top"/>
+        <ui:Button Content="Read" Margin="638,0,0,0"/>
+        <ui:Button Content="Button" Margin="638,270,0,0" VerticalAlignment="Top"/>
+        <ui:Button Content="Button" Margin="638,333,0,0" VerticalAlignment="Top"/>
+
+    </Grid>
+</Window>
