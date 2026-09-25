@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="Update" Height="450" Width="800">
     <Grid Background="#FFB299D1" RenderTransformOrigin="0.123,0.164">
-        <Label Content="Update" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontFamily="Arial Black" FontSize="36"/>
+        <Label Content="Update" HorizontalAlignment="Left" Margin="31,8,0,0" VerticalAlignment="Top" FontFamily="Arial Black" FontSize="36"/>
         <Label Content="email to update:" HorizontalAlignment="Left" Margin="30,63,0,0" VerticalAlignment="Top" FontFamily="Arial Black" FontSize="16" RenderTransformOrigin="0.181,2.228"/>
         <ui:TextBox HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Width="182" Margin="10,90,0,0"/>
         <Label Content="Name" HorizontalAlignment="Left" Margin="304,41,0,0" VerticalAlignment="Top" FontFamily="Arial Black" FontSize="16" RenderTransformOrigin="0.511,0.566"/>
