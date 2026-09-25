@@ -15,15 +15,13 @@ using System.Windows.Shapes;
 namespace Projeto_Gerenciamento_usuarios_wpf
 {
     /// <summary>
-    /// Lógica interna para HubAdmin.xaml
+    /// Lógica interna para Delete.xaml
     /// </summary>
-    public partial class HubAdmin : Window
+    public partial class Delete : Window
     {
-        public HubAdmin()
+        public Delete()
         {
             InitializeComponent();
         }
-
-        
     }
 }

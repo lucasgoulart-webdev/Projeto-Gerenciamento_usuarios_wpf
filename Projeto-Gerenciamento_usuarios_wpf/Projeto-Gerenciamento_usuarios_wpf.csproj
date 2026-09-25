@@ -113,14 +113,23 @@
     <Compile Include="Create.xaml.cs">
       <DependentUpon>Create.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Delete.xaml.cs">
+      <DependentUpon>Delete.xaml</DependentUpon>
+    </Compile>
     <Compile Include="HubAdmin.xaml.cs">
       <DependentUpon>HubAdmin.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Logs.xaml.cs">
+      <DependentUpon>Logs.xaml</DependentUpon>
     </Compile>
     <Compile Include="Read.xaml.cs">
       <DependentUpon>Read.xaml</DependentUpon>
     </Compile>
     <Compile Include="TelaLogin.xaml.cs">
       <DependentUpon>TelaLogin.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Unable.xaml.cs">
+      <DependentUpon>Unable.xaml</DependentUpon>
     </Compile>
     <Compile Include="Update.xaml.cs">
       <DependentUpon>Update.xaml</DependentUpon>
@@ -133,7 +142,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Delete.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="HubAdmin.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Logs.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -154,6 +171,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="TelaLogin.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Unable.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

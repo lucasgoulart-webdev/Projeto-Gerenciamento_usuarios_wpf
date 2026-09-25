@@ -15,15 +15,15 @@ using System.Windows.Shapes;
 namespace Projeto_Gerenciamento_usuarios_wpf
 {
     /// <summary>
-    /// Lógica interna para HubAdmin.xaml
+    /// Lógica interna para Unable.xaml
     /// </summary>
-    public partial class HubAdmin : Window
+    public partial class Unable : Window
     {
-        public HubAdmin()
+        public Unable()
         {
             InitializeComponent();
         }
 
-        
+       
     }
 }

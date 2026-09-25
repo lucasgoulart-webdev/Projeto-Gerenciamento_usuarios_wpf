@@ -15,15 +15,13 @@ using System.Windows.Shapes;
 namespace Projeto_Gerenciamento_usuarios_wpf
 {
     /// <summary>
-    /// Lógica interna para HubAdmin.xaml
+    /// Lógica interna para Logs.xaml
     /// </summary>
-    public partial class HubAdmin : Window
+    public partial class Logs : Window
     {
-        public HubAdmin()
+        public Logs()
         {
             InitializeComponent();
         }
-
-        
     }
 }

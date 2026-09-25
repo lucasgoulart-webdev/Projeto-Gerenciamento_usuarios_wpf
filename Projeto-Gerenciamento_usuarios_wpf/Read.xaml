@@ -8,11 +8,10 @@
         mc:Ignorable="d"
         Title="Read" Height="450" Width="800">
     <Grid Background="#FFB299D1">
-        <Label Content="Logs" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.721,0.51" FontFamily="Arial Black" FontSize="24"/>
-
-        <ui:DataGrid d:ItemsSource="{d:SampleData ItemCount=5}" Margin="32,47,32,135"/>
-        <ui:AutoSuggestBox/>
+        <Label Content="Users" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.721,0.51" FontFamily="Arial Black" FontSize="24"/>
         <ui:Button Content="Back" Margin="0,373,0,0" VerticalAlignment="Top" Height="37" Width="128" HorizontalAlignment="Center"/>
+        <Label Content="Cada card deverá apresentar:&#xD;&#xA;Imagem de perfil&#xD;&#xA;Nome&#xD;&#xA;Nome de usuário&#xD;&#xA;E-mail&#xD;&#xA;Perfil&#xD;&#xA;Status&#xD;&#xA;Último login&#xD;&#xA;" HorizontalAlignment="Left" Margin="41,81,0,0" VerticalAlignment="Top"/>
+        <Label Content="A tela deverá oferecer mecanismos de consulta (no mínimo 1), como:&#xD;&#xA;Pesquisa por nome&#xD;&#xA;Pesquisa por usuário&#xD;&#xA;Pesquisa por e-mail&#xD;&#xA;Filtro por perfil&#xD;&#xA;Filtro por status&#xD;&#xA;" HorizontalAlignment="Left" Margin="362,83,0,0" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>
