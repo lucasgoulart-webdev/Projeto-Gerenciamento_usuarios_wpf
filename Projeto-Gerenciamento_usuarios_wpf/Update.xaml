@@ -4,27 +4,219 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Projeto_Gerenciamento_usuarios_wpf"
-        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml" x:Class="Projeto_Gerenciamento_usuarios_wpf.Update"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+        x:Class="Projeto_Gerenciamento_usuarios_wpf.Update"
         mc:Ignorable="d"
-        Title="Update" Height="450" Width="800">
+        Title="Update"
+        Height="500"
+        Width="800">
+
     <Grid Background="#FFB299D1" RenderTransformOrigin="0.123,0.164">
-        <Label Content="Update" HorizontalAlignment="Left" Margin="31,8,0,0" VerticalAlignment="Top" FontFamily="Arial Black" FontSize="36"/>
-        <Label Content="email to update:" HorizontalAlignment="Left" Margin="30,63,0,0" VerticalAlignment="Top" FontFamily="Arial Black" FontSize="16" RenderTransformOrigin="0.181,2.228"/>
-        <ui:TextBox HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Width="182" Margin="10,90,0,0"/>
-        <Label Content="Name" HorizontalAlignment="Left" Margin="304,41,0,0" VerticalAlignment="Top" FontFamily="Arial Black" FontSize="16" RenderTransformOrigin="0.511,0.566"/>
-        <ui:TextBox HorizontalAlignment="Left" Margin="270,68,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" />
-        <Label Content="Username" HorizontalAlignment="Left" Margin="285,116,0,0" VerticalAlignment="Top" FontFamily="Arial Black" FontSize="16" RenderTransformOrigin="0.498,0.56"/>
-        <ui:TextBox HorizontalAlignment="Left" Margin="269,143,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <Label Content="Email" HorizontalAlignment="Left" Margin="306,195,0,0" VerticalAlignment="Top" FontFamily="Arial Black" FontSize="16"/>
-        <ui:TextBox HorizontalAlignment="Left" Margin="269,231,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <ComboBox HorizontalAlignment="Left" Margin="266,326,0,0" VerticalAlignment="Top" Width="120"/>
-        <Label Content="Status" HorizontalAlignment="Left" Margin="298,286,0,0" VerticalAlignment="Top" FontFamily="Arial Black" FontSize="16"/>
-        <Label Content="Profile" HorizontalAlignment="Left" Margin="543,41,0,0" VerticalAlignment="Top" FontFamily="Arial Black" FontSize="16" RenderTransformOrigin="0.532,0.543"/>
-        <ComboBox HorizontalAlignment="Left" Margin="512,67,0,0" VerticalAlignment="Top" Width="120"/>
-        <ui:Button Content="Search" Margin="68,140,0,0" VerticalAlignment="Top"/>
-        <Label Content="Image" HorizontalAlignment="Left" Margin="546,116,0,0" VerticalAlignment="Top" FontFamily="Arial Black" FontSize="16"/>
-        <Label Content="Cards" HorizontalAlignment="Left" Margin="555,164,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.071,0.575"/>
-        <ui:Button Content="Update" Margin="520,382,0,0" VerticalAlignment="Top" Width="233"/>
+
+        <Label Content="Update"
+               HorizontalAlignment="Left"
+               Margin="31,8,0,0"
+               VerticalAlignment="Top"
+               FontFamily="Arial Black"
+               FontSize="36"/>
+
+        <Label Content="email to update:"
+               HorizontalAlignment="Left"
+               Margin="30,63,0,0"
+               VerticalAlignment="Top"
+               FontFamily="Arial Black"
+               FontSize="16"/>
+
+        <ui:TextBox
+            HorizontalAlignment="Left"
+            TextWrapping="Wrap"
+            VerticalAlignment="Top"
+            Width="182"
+            Margin="10,90,0,0"/>
+
+        <ui:Button
+            Content="Search"
+            Margin="68,140,0,0"
+            VerticalAlignment="Top"/>
+
+
+        <!-- DADOS DO USUÁRIO -->
+
+        <Label Content="Name"
+               HorizontalAlignment="Left"
+               Margin="304,41,0,0"
+               VerticalAlignment="Top"
+               FontFamily="Arial Black"
+               FontSize="16"/>
+
+        <ui:TextBox
+            HorizontalAlignment="Left"
+            Margin="270,68,0,0"
+            TextWrapping="Wrap"
+            VerticalAlignment="Top"
+            Width="120"/>
+
+        <Label Content="Username"
+               HorizontalAlignment="Left"
+               Margin="285,116,0,0"
+               VerticalAlignment="Top"
+               FontFamily="Arial Black"
+               FontSize="16"/>
+
+        <ui:TextBox
+            HorizontalAlignment="Left"
+            Margin="269,143,0,0"
+            TextWrapping="Wrap"
+            VerticalAlignment="Top"
+            Width="120"/>
+
+        <Label Content="Email"
+               HorizontalAlignment="Left"
+               Margin="306,195,0,0"
+               VerticalAlignment="Top"
+               FontFamily="Arial Black"
+               FontSize="16"/>
+
+        <ui:TextBox
+            HorizontalAlignment="Left"
+            Margin="269,231,0,0"
+            TextWrapping="Wrap"
+            VerticalAlignment="Top"
+            Width="120"/>
+
+
+        <!-- STATUS -->
+
+        <Label Content="Status"
+               HorizontalAlignment="Left"
+               Margin="298,286,0,0"
+               VerticalAlignment="Top"
+               FontFamily="Arial Black"
+               FontSize="16"/>
+
+        <ComboBox
+            HorizontalAlignment="Left"
+            Margin="266,326,0,0"
+            VerticalAlignment="Top"
+            Width="120"/>
+
+
+        <!-- PROFILE -->
+
+        <Label Content="Profile"
+               HorizontalAlignment="Left"
+               Margin="543,41,0,0"
+               VerticalAlignment="Top"
+               FontFamily="Arial Black"
+               FontSize="16"/>
+
+        <ComboBox
+            HorizontalAlignment="Left"
+            Margin="512,67,0,0"
+            VerticalAlignment="Top"
+            Width="120"/>
+
+
+        <!-- AVATAR -->
+
+        <Label Content="Image"
+               HorizontalAlignment="Left"
+               Margin="546,116,0,0"
+               VerticalAlignment="Top"
+               FontFamily="Arial Black"
+               FontSize="16"/>
+
+        <Label Content="Choose your Avatar"
+               HorizontalAlignment="Left"
+               Margin="510,145,0,0"
+               VerticalAlignment="Top"
+               FontFamily="Arial Black"
+               FontSize="13"/>
+
+
+        <!-- CARDS DOS AVATARES -->
+
+        <WrapPanel
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Margin="470,175,0,0"
+            Width="290">
+
+            <Button
+                Width="50"
+                Height="50"
+                Margin="4"
+                Padding="0"
+                Click="Avatar1_Click">
+
+                <Image
+                    Source="Images/avatar1.png"
+                    Stretch="UniformToFill"/>
+
+            </Button>
+
+            <Button
+                Width="50"
+                Height="50"
+                Margin="4"
+                Padding="0"
+                Click="Avatar2_Click">
+
+                <Image
+                    Source="Images/avatar2.png"
+                    Stretch="UniformToFill"/>
+
+            </Button>
+
+            <Button
+                Width="50"
+                Height="50"
+                Margin="4"
+                Padding="0"
+                Click="Avatar3_Click">
+
+                <Image
+                    Source="Images/avatar3.png"
+                    Stretch="UniformToFill"/>
+
+            </Button>
+
+            <Button
+                Width="50"
+                Height="50"
+                Margin="4"
+                Padding="0"
+                Click="Avatar4_Click">
+
+                <Image
+                    Source="Images/avatar4.png"
+                    Stretch="UniformToFill"/>
+
+            </Button>
+
+            <Button
+                Width="50"
+                Height="50"
+                Margin="4"
+                Padding="0"
+                Click="Avatar5_Click">
+
+                <Image
+                    Source="Images/avatar5.png"
+                    Stretch="UniformToFill"/>
+
+            </Button>
+
+        </WrapPanel>
+
+
+        <!-- BOTÃO UPDATE -->
+
+        <ui:Button
+            Content="Update"
+            Margin="520,382,0,0"
+            VerticalAlignment="Top"
+            Width="233"/>
 
     </Grid>
 </Window>
