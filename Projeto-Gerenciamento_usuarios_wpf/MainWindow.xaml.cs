@@ -1,6 +1,7 @@
 using System;
 using System.Windows;
 using MySql.Data.MySqlClient;
+using BCrypt.Net;
 
 namespace Projeto_Gerenciamento_usuarios_wpf
 {
@@ -9,76 +10,78 @@ namespace Projeto_Gerenciamento_usuarios_wpf
     /// </summary>
     public partial class MainWindow : Window
     {
-        // Conexão com o banco de dados
         private string conexao =
             "Server=localhost;Database=projeto_usuarios;Uid=root;Pwd=;";
 
         public MainWindow()
         {
             InitializeComponent();
+
+            VerificarAdministrador();
         }
 
-        // Verifica se existe algum administrador cadastrado
-        private bool ExisteAdmin()
+        // Verifica se já existe algum administrador cadastrado
+        private void VerificarAdministrador()
         {
             try
             {
-                using (MySqlConnection connection = new MySqlConnection(conexao))
+                using (MySqlConnection connection =
+                    new MySqlConnection(conexao))
                 {
                     connection.Open();
 
-                    string sql = "SELECT COUNT(*) FROM usuarios WHERE tipo_usuario = 'Admin'";
+                    string sql = @"
+                        SELECT COUNT(*)
+                        FROM usuarios
+                        WHERE tipo_usuario = 'Admin'";
 
-                    using (MySqlCommand command = new MySqlCommand(sql, connection))
+                    using (MySqlCommand command =
+                        new MySqlCommand(sql, connection))
                     {
-                        int quantidade = Convert.ToInt32(command.ExecuteScalar());
+                        int quantidadeAdmins =
+                            Convert.ToInt32(command.ExecuteScalar());
 
-                        return quantidade > 0;
+                        // Se não existir nenhum administrador
+                        if (quantidadeAdmins == 0)
+                        {
+                            MessageBox.Show(
+                                "Nenhum administrador foi cadastrado ainda.\n" +
+                                "Cadastre o primeiro administrador para continuar.",
+                                "Primeiro acesso",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Information);
+
+                            AdminCadastro adminCadastro =
+                                new AdminCadastro();
+
+                            adminCadastro.Show();
+
+                            this.Close();
+                        }
                     }
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    "Erro ao verificar administrador:\n" + ex.Message,
+                    "Erro ao verificar administrador:\n" +
+                    ex.Message,
                     "Erro",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
-
-                return false;
             }
         }
 
-        // Botão de Login
         private void BtnLogin_Click(object sender, RoutedEventArgs e)
         {
-            // Primeiro verifica se existe administrador
-            if (!ExisteAdmin())
-            {
-                MessageBox.Show(
-                    "Não tem nenhum administrador cadastrado.",
-                    "Administrador",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information);
-
-                AdminCadastro adminCadastro = new AdminCadastro();
-                adminCadastro.Show();
-
-                this.Close();
-
-                return;
-            }
-
-            // Pega os dados digitados
-            string username = TxtUsername.Text;
+            string username = TxtUsername.Text.Trim();
             string senha = TxtPassword.Password;
 
-            // Verifica se os campos estão vazios
             if (string.IsNullOrWhiteSpace(username) ||
                 string.IsNullOrWhiteSpace(senha))
             {
                 MessageBox.Show(
-                    "Preencha o usuário e a senha.",
+                    "Usuário ou senha inválidos.",
                     "Login",
                     MessageBoxButton.OK,
                     MessageBoxImage.Warning);
@@ -88,28 +91,41 @@ namespace Projeto_Gerenciamento_usuarios_wpf
 
             try
             {
-                using (MySqlConnection connection = new MySqlConnection(conexao))
+                using (MySqlConnection connection =
+                    new MySqlConnection(conexao))
                 {
                     connection.Open();
 
                     string sql = @"
-                        SELECT id, nome_completo, username, senha,
-                               avatar, tipo_usuario, status, tentativas_login
+                        SELECT
+                            id,
+                            nome_completo,
+                            username,
+                            senha,
+                            avatar,
+                            tipo_usuario,
+                            perfil_acesso,
+                            status,
+                            tentativas_login,
+                            bloqueado_ate
                         FROM usuarios
                         WHERE username = @username
                         LIMIT 1";
 
-                    using (MySqlCommand command = new MySqlCommand(sql, connection))
+                    using (MySqlCommand command =
+                        new MySqlCommand(sql, connection))
                     {
-                        command.Parameters.AddWithValue("@username", username);
+                        command.Parameters.AddWithValue(
+                            "@username", username);
 
-                        using (MySqlDataReader reader = command.ExecuteReader())
+                        using (MySqlDataReader reader =
+                            command.ExecuteReader())
                         {
-                            // Usuário não encontrado
+                            // Usuário não existe
                             if (!reader.Read())
                             {
                                 MessageBox.Show(
-                                    "Usuário ou senha incorretos.",
+                                    "Usuário ou senha inválidos.",
                                     "Login",
                                     MessageBoxButton.OK,
                                     MessageBoxImage.Warning);
@@ -118,15 +134,38 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                             }
 
                             int id = Convert.ToInt32(reader["id"]);
-                            string senhaBanco = reader["senha"].ToString();
-                            string status = reader["status"].ToString();
-                            int tentativas = Convert.ToInt32(reader["tentativas_login"]);
 
-                            // Usuário já bloqueado
-                            if (status == "Bloqueado")
+                            string senhaHash =
+                                reader["senha"].ToString();
+
+                            string status =
+                                reader["status"].ToString();
+
+                            string tipoUsuario =
+                                reader["tipo_usuario"].ToString();
+
+                            string perfilAcesso =
+                                reader["perfil_acesso"].ToString();
+
+                            int tentativas =
+                                Convert.ToInt32(
+                                    reader["tentativas_login"]);
+
+                            DateTime? bloqueadoAte = null;
+
+                            if (reader["bloqueado_ate"] != DBNull.Value)
+                            {
+                                bloqueadoAte =
+                                    Convert.ToDateTime(
+                                        reader["bloqueado_ate"]);
+                            }
+
+                            // Usuário temporariamente bloqueado
+                            if (bloqueadoAte.HasValue &&
+                                bloqueadoAte.Value > DateTime.UtcNow)
                             {
                                 MessageBox.Show(
-                                    "Este usuário está bloqueado.",
+                                    "Usuário ou senha inválidos.",
                                     "Login",
                                     MessageBoxButton.OK,
                                     MessageBoxImage.Warning);
@@ -134,8 +173,26 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                                 return;
                             }
 
+                            // Usuário não está ativo
+                            if (status != "Ativo")
+                            {
+                                MessageBox.Show(
+                                    "Usuário ou senha inválidos.",
+                                    "Login",
+                                    MessageBoxButton.OK,
+                                    MessageBoxImage.Warning);
+
+                                return;
+                            }
+
+                            // Verifica o HASH da senha
+                            bool senhaCorreta =
+                                BCrypt.Net.BCrypt.Verify(
+                                    senha,
+                                    senhaHash);
+
                             // Senha incorreta
-                            if (senha != senhaBanco)
+                            if (!senhaCorreta)
                             {
                                 reader.Close();
 
@@ -146,86 +203,99 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                                     string bloquear = @"
                                         UPDATE usuarios
                                         SET tentativas_login = @tentativas,
-                                            status = 'Bloqueado'
+                                            bloqueado_ate =
+                                                DATE_ADD(
+                                                    UTC_TIMESTAMP(),
+                                                    INTERVAL 5 MINUTE)
                                         WHERE id = @id";
 
                                     using (MySqlCommand update =
-                                        new MySqlCommand(bloquear, connection))
+                                        new MySqlCommand(
+                                            bloquear,
+                                            connection))
                                     {
-                                        update.Parameters.AddWithValue("@tentativas", tentativas);
-                                        update.Parameters.AddWithValue("@id", id);
+                                        update.Parameters.AddWithValue(
+                                            "@tentativas",
+                                            tentativas);
+
+                                        update.Parameters.AddWithValue(
+                                            "@id",
+                                            id);
 
                                         update.ExecuteNonQuery();
                                     }
-
-                                    MessageBox.Show(
-                                        "Senha incorreta 5 vezes.\nO usuário foi bloqueado.",
-                                        "Usuário bloqueado",
-                                        MessageBoxButton.OK,
-                                        MessageBoxImage.Warning);
                                 }
                                 else
                                 {
-                                    string atualizar = @"
+                                    string atualizarTentativas = @"
                                         UPDATE usuarios
                                         SET tentativas_login = @tentativas
                                         WHERE id = @id";
 
                                     using (MySqlCommand update =
-                                        new MySqlCommand(atualizar, connection))
+                                        new MySqlCommand(
+                                            atualizarTentativas,
+                                            connection))
                                     {
-                                        update.Parameters.AddWithValue("@tentativas", tentativas);
-                                        update.Parameters.AddWithValue("@id", id);
+                                        update.Parameters.AddWithValue(
+                                            "@tentativas",
+                                            tentativas);
+
+                                        update.Parameters.AddWithValue(
+                                            "@id",
+                                            id);
 
                                         update.ExecuteNonQuery();
                                     }
-
-                                    MessageBox.Show(
-                                        "Usuário ou senha incorretos.",
-                                        "Login",
-                                        MessageBoxButton.OK,
-                                        MessageBoxImage.Warning);
                                 }
+
+                                MessageBox.Show(
+                                    "Usuário ou senha inválidos.",
+                                    "Login",
+                                    MessageBoxButton.OK,
+                                    MessageBoxImage.Warning);
 
                                 return;
                             }
 
-                            // Login correto
-                            string tipoUsuario = reader["tipo_usuario"].ToString();
-
+                            // LOGIN CORRETO
                             reader.Close();
 
-                            string loginCorreto = @"
+                            string atualizarLogin = @"
                                 UPDATE usuarios
                                 SET tentativas_login = 0,
+                                    bloqueado_ate = NULL,
                                     status = 'Ativo',
                                     ultimo_login = UTC_TIMESTAMP()
                                 WHERE id = @id";
 
                             using (MySqlCommand update =
-                                new MySqlCommand(loginCorreto, connection))
+                                new MySqlCommand(
+                                    atualizarLogin,
+                                    connection))
                             {
-                                update.Parameters.AddWithValue("@id", id);
+                                update.Parameters.AddWithValue(
+                                    "@id",
+                                    id);
+
                                 update.ExecuteNonQuery();
                             }
 
-                            MessageBox.Show(
-                                "Login realizado com sucesso!",
-                                "Login",
-                                MessageBoxButton.OK,
-                                MessageBoxImage.Information);
-
-                            // Se for administrador
-                            if (tipoUsuario == "Admin")
+                            // Identifica as permissões
+                            if (tipoUsuario == "Admin" ||
+                                perfilAcesso == "Administrador")
                             {
-                                HubAdmin hubAdmin = new HubAdmin();
+                                HubAdmin hubAdmin =
+                                    new HubAdmin();
+
                                 hubAdmin.Show();
                             }
-                            // Se for usuário normal
                             else
                             {
-                                // Aqui vamos abrir o Hub do usuário
-                                // quando terminarmos essa tela.
+                                // Futuramente:
+                                // HubUsuario hubUsuario =
+                                //     new HubUsuario();
+                                // hubUsuario.Show();
                             }
 
                             this.Close();
@@ -236,7 +306,8 @@ namespace Projeto_Gerenciamento_usuarios_wpf
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    "Erro ao realizar login:\n" + ex.Message,
+                    "Erro ao realizar o login:\n" +
+                    ex.Message,
                     "Erro",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
