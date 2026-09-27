@@ -1,4 +1,4 @@
-﻿<Window
+<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,76 +7,170 @@
         xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
         x:Class="Projeto_Gerenciamento_usuarios_wpf.Create"
         mc:Ignorable="d"
-        Title="Create" Height="650" Width="800">
+        Title="Create"
+        Height="500"
+        Width="800">
 
     <Grid Background="#FFC199D1">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="0*"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
 
-        <Label Content="Create user Account" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" Foreground="#FFFAF6F6" FontFamily="Arial Black" FontSize="24" Grid.RowSpan="2"/>
-        <Label Content="Full Name" HorizontalAlignment="Center" Margin="0,60,0,0" VerticalAlignment="Top" FontSize="16" FontFamily="Arial Black" Grid.RowSpan="2"/>
+        <!-- Título -->
+        <Label Content="Create user Account"
+               HorizontalAlignment="Center"
+               Margin="0,10,0,0"
+               VerticalAlignment="Top"
+               Foreground="#FFFAF6F6"
+               FontFamily="Arial Black"
+               FontSize="24"/>
 
-        <ui:TextBox HorizontalAlignment="Center" Margin="0,82,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="188" Height="37" Grid.RowSpan="2"/>
+        <!-- COLUNA ESQUERDA -->
 
-        <Label Content="Email" HorizontalAlignment="Center" Margin="0,124,0,0" VerticalAlignment="Top" FontFamily="Arial Black" FontSize="16" Grid.RowSpan="2"/>
-        <ui:TextBox HorizontalAlignment="Center" Margin="0,146,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="188" Height="37" Grid.RowSpan="2"/>
+        <Label Content="Full Name"
+               HorizontalAlignment="Left"
+               Margin="125,65,0,0"
+               VerticalAlignment="Top"
+               FontSize="16"
+               FontFamily="Arial Black"/>
 
-        <Label Content="Username" HorizontalAlignment="Center" Margin="0,188,0,0" VerticalAlignment="Top" FontSize="16" FontFamily="Arial Black" Grid.RowSpan="2"/>
-        <ui:TextBox HorizontalAlignment="Center" Margin="0,210,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="188" Height="37" Grid.RowSpan="2"/>
+        <ui:TextBox HorizontalAlignment="Left"
+                    Margin="100,90,0,0"
+                    VerticalAlignment="Top"
+                    Width="188"
+                    Height="37"/>
 
-        <Label Content="Password" HorizontalAlignment="Center" Margin="0,252,0,0" VerticalAlignment="Top" FontSize="16" FontFamily="Arial Black" Grid.RowSpan="2"/>
 
-        <ui:PasswordBox HorizontalAlignment="Center" Margin="0,279,0,0" Grid.RowSpan="2" TextWrapping="Wrap" Text="PasswordBox" VerticalAlignment="Top" Width="309"/>
+        <Label Content="Username"
+               HorizontalAlignment="Left"
+               Margin="125,140,0,0"
+               VerticalAlignment="Top"
+               FontSize="16"
+               FontFamily="Arial Black"/>
 
-        <Label Content="Confirm Password" HorizontalAlignment="Center" Margin="0,320,0,0" Grid.RowSpan="2" VerticalAlignment="Top" FontFamily="Arial Black" FontSize="16"/>
+        <ui:TextBox HorizontalAlignment="Left"
+                    Margin="100,165,0,0"
+                    VerticalAlignment="Top"
+                    Width="188"
+                    Height="37"/>
 
-        <ui:PasswordBox HorizontalAlignment="Center" Margin="0,342,0,0" Grid.RowSpan="2" TextWrapping="Wrap" Text="PasswordBox" VerticalAlignment="Top" Width="309"/>
+
+        <Label Content="Password"
+               HorizontalAlignment="Left"
+               Margin="125,215,0,0"
+               VerticalAlignment="Top"
+               FontSize="16"
+               FontFamily="Arial Black"/>
+
+        <ui:PasswordBox HorizontalAlignment="Left"
+                        Margin="100,240,0,0"
+                        VerticalAlignment="Top"
+                        Width="188"
+                        Height="37"/>
+
+
+        <!-- COLUNA DIREITA -->
+
+        <Label Content="Email"
+               HorizontalAlignment="Left"
+               Margin="475,65,0,0"
+               VerticalAlignment="Top"
+               FontSize="16"
+               FontFamily="Arial Black"/>
+
+        <ui:TextBox HorizontalAlignment="Left"
+                    Margin="450,90,0,0"
+                    VerticalAlignment="Top"
+                    Width="188"
+                    Height="37"/>
+
+
+        <Label Content="Confirm Password"
+               HorizontalAlignment="Left"
+               Margin="425,140,0,0"
+               VerticalAlignment="Top"
+               FontSize="16"
+               FontFamily="Arial Black"/>
+
+        <ui:PasswordBox HorizontalAlignment="Left"
+                        Margin="450,165,0,0"
+                        VerticalAlignment="Top"
+                        Width="188"
+                        Height="37"/>
+
+
+        <!-- AVATARES -->
 
         <Label Content="Choose your Avatar"
                HorizontalAlignment="Center"
-               Margin="0,390,0,0"
+               Margin="0,300,0,0"
                VerticalAlignment="Top"
-               FontFamily="Arial Black"
                FontSize="16"
-               Grid.RowSpan="2"/>
+               FontFamily="Arial Black"/>
 
-        <WrapPanel
-            HorizontalAlignment="Center"
-            VerticalAlignment="Top"
-            Margin="0,425,0,0"
-            Grid.RowSpan="2">
+        <WrapPanel HorizontalAlignment="Center"
+                   VerticalAlignment="Top"
+                   Margin="0,330,0,0">
 
-            <Button Width="60" Height="60" Margin="5" Padding="0" Click="Avatar1_Click">
-                <Image Source="Images/avatar1.png" Stretch="UniformToFill"/>
+            <Button Width="60"
+                    Height="60"
+                    Margin="5"
+                    Padding="0"
+                    Click="Avatar1_Click">
+
+                <Image Source="Images/avatar1.png"
+                       Stretch="Uniform"/>
             </Button>
 
-            <Button Width="60" Height="60" Margin="5" Padding="0" Click="Avatar2_Click">
-                <Image Source="Images/avatar2.png" Stretch="UniformToFill"/>
+            <Button Width="60"
+                    Height="60"
+                    Margin="5"
+                    Padding="0"
+                    Click="Avatar2_Click">
+
+                <Image Source="Images/avatar2.png"
+                       Stretch="Uniform"/>
             </Button>
 
-            <Button Width="60" Height="60" Margin="5" Padding="0" Click="Avatar3_Click">
-                <Image Source="Images/avatar3.png" Stretch="UniformToFill"/>
+            <Button Width="60"
+                    Height="60"
+                    Margin="5"
+                    Padding="0"
+                    Click="Avatar3_Click">
+
+                <Image Source="Images/avatar3.png"
+                       Stretch="Uniform"/>
             </Button>
 
-            <Button Width="60" Height="60" Margin="5" Padding="0" Click="Avatar4_Click">
-                <Image Source="Images/avatar4.png" Stretch="UniformToFill"/>
+            <Button Width="60"
+                    Height="60"
+                    Margin="5"
+                    Padding="0"
+                    Click="Avatar4_Click">
+
+                <Image Source="Images/avatar4.png"
+                       Stretch="Uniform"/>
             </Button>
 
-            <Button Width="60" Height="60" Margin="5" Padding="0" Click="Avatar5_Click">
-                <Image Source="Images/avatar5.png" Stretch="UniformToFill"/>
+            <Button Width="60"
+                    Height="60"
+                    Margin="5"
+                    Padding="0"
+                    Click="Avatar5_Click">
+
+                <Image Source="Images/avatar5.png"
+                       Stretch="Uniform"/>
             </Button>
 
         </WrapPanel>
 
+
+        <!-- BOTÃO CREATE -->
+
         <ui:Button Content="Create"
-                   Margin="0,589,0,0"
+                   Margin="0,420,0,0"
                    VerticalAlignment="Top"
                    HorizontalAlignment="Center"
                    Height="35"
-                   Width="128"
-                   Grid.RowSpan="2"/>
+                   Width="128"/>
 
     </Grid>
+
 </Window>
