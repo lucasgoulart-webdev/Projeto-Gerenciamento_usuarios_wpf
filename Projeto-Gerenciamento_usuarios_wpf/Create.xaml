@@ -31,7 +31,9 @@
                FontSize="16"
                FontFamily="Arial Black"/>
 
-        <ui:TextBox HorizontalAlignment="Left"
+        <ui:TextBox
+                    x:Name="TxtNome"
+                    HorizontalAlignment="Left"
                     Margin="100,90,0,0"
                     VerticalAlignment="Top"
                     Width="188"
@@ -45,7 +47,9 @@
                FontSize="16"
                FontFamily="Arial Black"/>
 
-        <ui:TextBox HorizontalAlignment="Left"
+        <ui:TextBox
+                    x:Name="TxtUsername"
+                    HorizontalAlignment="Left"
                     Margin="100,165,0,0"
                     VerticalAlignment="Top"
                     Width="188"
@@ -59,7 +63,9 @@
                FontSize="16"
                FontFamily="Arial Black"/>
 
-        <ui:PasswordBox HorizontalAlignment="Left"
+        <ui:PasswordBox
+                        x:Name="TxtPassword"
+                        HorizontalAlignment="Left"
                         Margin="100,240,0,0"
                         VerticalAlignment="Top"
                         Width="188"
@@ -75,7 +81,9 @@
                FontSize="16"
                FontFamily="Arial Black"/>
 
-        <ui:TextBox HorizontalAlignment="Left"
+        <ui:TextBox
+                    x:Name="TxtEmail"
+                    HorizontalAlignment="Left"
                     Margin="450,90,0,0"
                     VerticalAlignment="Top"
                     Width="188"
@@ -89,7 +97,9 @@
                FontSize="16"
                FontFamily="Arial Black"/>
 
-        <ui:PasswordBox HorizontalAlignment="Left"
+        <ui:PasswordBox
+                        x:Name="TxtConfirmPassword"
+                        HorizontalAlignment="Left"
                         Margin="450,165,0,0"
                         VerticalAlignment="Top"
                         Width="188"
@@ -165,6 +175,7 @@
         <!-- BOTÃO CREATE -->
 
         <ui:Button Content="Create"
+                   Click="BtnCreate_Click"
                    Margin="0,420,0,0"
                    VerticalAlignment="Top"
                    HorizontalAlignment="Center"
