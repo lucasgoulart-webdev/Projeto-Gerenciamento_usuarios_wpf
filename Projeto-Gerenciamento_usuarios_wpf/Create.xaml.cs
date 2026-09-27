@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +11,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Text.RegularExpressions;
+using MySql.Data.MySqlClient;
+using BCrypt.Net;
 
 namespace Projeto_Gerenciamento_usuarios_wpf
 {
@@ -19,9 +22,334 @@ namespace Projeto_Gerenciamento_usuarios_wpf
     /// </summary>
     public partial class Create : Window
     {
+        private string conexao =
+            "Server=localhost;Database=projeto_usuarios;Uid=root;Pwd=;";
+
+        // Guarda o avatar escolhido
+        private string avatarSelecionado = "";
+
         public Create()
         {
             InitializeComponent();
+        }
+
+        // ==============================
+        // SELEÇÃO DOS AVATARES
+        // ==============================
+
+        private void Avatar1_Click(object sender, RoutedEventArgs e)
+        {
+            avatarSelecionado = "Images/avatar1.png";
+        }
+
+        private void Avatar2_Click(object sender, RoutedEventArgs e)
+        {
+            avatarSelecionado = "Images/avatar2.png";
+        }
+
+        private void Avatar3_Click(object sender, RoutedEventArgs e)
+        {
+            avatarSelecionado = "Images/avatar3.png";
+        }
+
+        private void Avatar4_Click(object sender, RoutedEventArgs e)
+        {
+            avatarSelecionado = "Images/avatar4.png";
+        }
+
+        private void Avatar5_Click(object sender, RoutedEventArgs e)
+        {
+            avatarSelecionado = "Images/avatar5.png";
+        }
+
+        // ==============================
+        // BOTÃO CREATE
+        // ==============================
+
+        private void BtnCreate_Click(object sender, RoutedEventArgs e)
+        {
+            string nome = TxtNome.Text.Trim();
+            string username = TxtUsername.Text.Trim();
+            string email = TxtEmail.Text.Trim();
+
+            string senha = TxtPassword.Password;
+            string confirmarSenha = TxtConfirmPassword.Password;
+
+            // ==============================
+            // VALIDAÇÕES
+            // ==============================
+
+            // Nome obrigatório
+            if (string.IsNullOrWhiteSpace(nome))
+            {
+                MessageBox.Show(
+                    "O nome é obrigatório.",
+                    "Cadastro",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+
+                return;
+            }
+
+            // Username obrigatório
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                MessageBox.Show(
+                    "O nome de usuário é obrigatório.",
+                    "Cadastro",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+
+                return;
+            }
+
+            // Username mínimo de 3 caracteres
+            if (username.Length < 3)
+            {
+                MessageBox.Show(
+                    "O nome de usuário deve possuir no mínimo 3 caracteres.",
+                    "Cadastro",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+
+                return;
+            }
+
+            // E-mail obrigatório
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                MessageBox.Show(
+                    "O e-mail é obrigatório.",
+                    "Cadastro",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+
+                return;
+            }
+
+            // Formato do e-mail
+            string padraoEmail =
+                @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+
+            if (!Regex.IsMatch(email, padraoEmail))
+            {
+                MessageBox.Show(
+                    "Digite um e-mail válido.",
+                    "Cadastro",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+
+                return;
+            }
+
+            // Senha obrigatória
+            if (string.IsNullOrWhiteSpace(senha))
+            {
+                MessageBox.Show(
+                    "A senha é obrigatória.",
+                    "Cadastro",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+
+                return;
+            }
+
+            // Senha mínima de 8 caracteres
+            if (senha.Length < 8)
+            {
+                MessageBox.Show(
+                    "A senha deve possuir no mínimo 8 caracteres.",
+                    "Cadastro",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+
+                return;
+            }
+
+            // Confirmação obrigatória
+            if (string.IsNullOrWhiteSpace(confirmarSenha))
+            {
+                MessageBox.Show(
+                    "A confirmação da senha é obrigatória.",
+                    "Cadastro",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+
+                return;
+            }
+
+            // Senhas iguais
+            if (senha != confirmarSenha)
+            {
+                MessageBox.Show(
+                    "A senha e a confirmação devem ser iguais.",
+                    "Cadastro",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+
+                return;
+            }
+
+            // Avatar obrigatório
+            if (string.IsNullOrWhiteSpace(avatarSelecionado))
+            {
+                MessageBox.Show(
+                    "Selecione uma imagem de perfil.",
+                    "Cadastro",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+
+                return;
+            }
+
+            // ==============================
+            // BANCO DE DADOS
+            // ==============================
+
+            try
+            {
+                using (MySqlConnection connection =
+                    new MySqlConnection(conexao))
+                {
+                    connection.Open();
+
+                    // Verifica username e e-mail duplicados
+                    string verificar = @"
+                        SELECT COUNT(*)
+                        FROM usuarios
+                        WHERE username = @username
+                           OR email = @email";
+
+                    using (MySqlCommand command =
+                        new MySqlCommand(verificar, connection))
+                    {
+                        command.Parameters.AddWithValue(
+                            "@username", username);
+
+                        command.Parameters.AddWithValue(
+                            "@email", email);
+
+                        int quantidade =
+                            Convert.ToInt32(command.ExecuteScalar());
+
+                        if (quantidade > 0)
+                        {
+                            MessageBox.Show(
+                                "O nome de usuário ou e-mail já está cadastrado.",
+                                "Cadastro",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Warning);
+
+                            return;
+                        }
+                    }
+
+                    // ==============================
+                    // HASH DA SENHA
+                    // ==============================
+
+                    string senhaHash =
+                        BCrypt.Net.BCrypt.HashPassword(senha);
+
+                    // ==============================
+                    // DADOS AUTOMÁTICOS DO USUÁRIO
+                    // ==============================
+
+                    string tipoUsuario = "Usuário";
+                    string perfilAcesso = "Usuário";
+                    string status = "Ativo";
+
+                    // ==============================
+                    // INSERE NO BANCO
+                    // ==============================
+
+                    string sql = @"
+                        INSERT INTO usuarios
+                        (
+                            nome_completo,
+                            username,
+                            email,
+                            senha,
+                            avatar,
+                            tipo_usuario,
+                            perfil_acesso,
+                            status,
+                            tentativas_login,
+                            bloqueado_ate,
+                            data_criacao,
+                            data_alteracao
+                        )
+                        VALUES
+                        (
+                            @nome,
+                            @username,
+                            @email,
+                            @senha,
+                            @avatar,
+                            @tipo_usuario,
+                            @perfil_acesso,
+                            @status,
+                            0,
+                            NULL,
+                            UTC_TIMESTAMP(),
+                            UTC_TIMESTAMP()
+                        )";
+
+                    using (MySqlCommand command =
+                        new MySqlCommand(sql, connection))
+                    {
+                        command.Parameters.AddWithValue(
+                            "@nome", nome);
+
+                        command.Parameters.AddWithValue(
+                            "@username", username);
+
+                        command.Parameters.AddWithValue(
+                            "@email", email);
+
+                        command.Parameters.AddWithValue(
+                            "@senha", senhaHash);
+
+                        command.Parameters.AddWithValue(
+                            "@avatar", avatarSelecionado);
+
+                        command.Parameters.AddWithValue(
+                            "@tipo_usuario", tipoUsuario);
+
+                        command.Parameters.AddWithValue(
+                            "@perfil_acesso", perfilAcesso);
+
+                        command.Parameters.AddWithValue(
+                            "@status", status);
+
+                        command.ExecuteNonQuery();
+                    }
+
+                    MessageBox.Show(
+                        "Usuário cadastrado com sucesso!",
+                        "Cadastro",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+
+                    this.Close();
+                }
+            }
+            catch (MySqlException ex)
+            {
+                MessageBox.Show(
+                    "Erro no banco de dados:\n" + ex.Message,
+                    "Erro",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    "Erro ao cadastrar usuário:\n" + ex.Message,
+                    "Erro",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
         }
     }
 }
