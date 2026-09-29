@@ -150,7 +150,7 @@
                 Click="Avatar1_Click">
 
                 <Image
-                    Source="Images/avatar1.png"
+                    Source="/Imagens/avatar1.jpg"
                     Stretch="UniformToFill"/>
 
             </Button>
@@ -163,7 +163,7 @@
                 Click="Avatar2_Click">
 
                 <Image
-                    Source="Images/avatar2.png"
+                    Source="/Imagens/avatar2.jpg"
                     Stretch="UniformToFill"/>
 
             </Button>
@@ -176,7 +176,7 @@
                 Click="Avatar3_Click">
 
                 <Image
-                    Source="Images/avatar3.png"
+                    Source="/Imagens/avatar3.jpg"
                     Stretch="UniformToFill"/>
 
             </Button>
@@ -189,7 +189,7 @@
                 Click="Avatar4_Click">
 
                 <Image
-                    Source="Images/avatar4.png"
+                    Source="/Imagens/avatar4.jpg"
                     Stretch="UniformToFill"/>
 
             </Button>
@@ -202,7 +202,7 @@
                 Click="Avatar5_Click">
 
                 <Image
-                    Source="Images/avatar5.png"
+                    Source="/Imagens/avatar5.jpg"
                     Stretch="UniformToFill"/>
 
             </Button>

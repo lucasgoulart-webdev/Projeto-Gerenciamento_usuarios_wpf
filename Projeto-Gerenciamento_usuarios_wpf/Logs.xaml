@@ -32,7 +32,7 @@
                Margin="35,65,0,0"
                VerticalAlignment="Top"
                Width="260"
-               Height="36"/>
+               Height="36" />
 
         <ui:Button
                x:Name="BtnSearch"

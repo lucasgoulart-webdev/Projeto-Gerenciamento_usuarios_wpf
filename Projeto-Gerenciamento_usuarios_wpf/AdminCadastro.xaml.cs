@@ -39,7 +39,7 @@ namespace Projeto_Gerenciamento_usuarios_wpf
             string senha = TxtPassword.Password;
             string confirmarSenha = TxtConfirmPassword.Password;
 
-            string avatar = "Images/admin-avatar.png";
+            string avatar = "Imagens/adminAvatar.jpg";
 
             // Nome obrigatório
             if (string.IsNullOrWhiteSpace(nome))

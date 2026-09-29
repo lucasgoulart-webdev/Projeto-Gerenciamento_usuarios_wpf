@@ -24,6 +24,29 @@ namespace Projeto_Gerenciamento_usuarios_wpf
             InitializeComponent();
         }
 
-        
+        private void Avatar1_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Avatar2_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Avatar3_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Avatar4_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Avatar5_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

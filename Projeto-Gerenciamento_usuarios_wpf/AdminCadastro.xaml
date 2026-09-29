@@ -113,17 +113,26 @@
                Foreground="White"/>
 
         <Button
-            Width="70"
-            Height="70"
-            Margin="0,425,0,0"
-            VerticalAlignment="Top"
-            HorizontalAlignment="Center"
-            Padding="0">
+    Width="70"
+    Height="70"
+    Margin="0,425,0,0"
+    VerticalAlignment="Top"
+    HorizontalAlignment="Center"
+    Padding="0">
+
+            <Button.Style>
+                <Style TargetType="Button">
+                    <Style.Triggers>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
 
             <Image
-                Source="Images/admin-avatar.png"
-                Stretch="UniformToFill"/>
-
+        Source="/Imagens/adminAvatar.jpg"
+        Stretch="UniformToFill"/>
         </Button>
 
 

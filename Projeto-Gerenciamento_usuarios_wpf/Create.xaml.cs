@@ -33,33 +33,46 @@ namespace Projeto_Gerenciamento_usuarios_wpf
             InitializeComponent();
         }
 
-        // ==============================
-        // SELEÇÃO DOS AVATARES
-        // ==============================
+        private void SelecionarAvatar(Button selecionado)
+        {
+            Avatar1.Opacity = 1;
+            Avatar2.Opacity = 1;
+            Avatar3.Opacity = 1;
+            Avatar4.Opacity = 1;
+            Avatar5.Opacity = 1;
+
+            selecionado.Opacity = 0.5;
+        }
+
 
         private void Avatar1_Click(object sender, RoutedEventArgs e)
         {
-            avatarSelecionado = "Images/avatar1.png";
+            SelecionarAvatar(Avatar1);
+            avatarSelecionado = "Imagens/avatar1.jpg";
         }
 
         private void Avatar2_Click(object sender, RoutedEventArgs e)
         {
-            avatarSelecionado = "Images/avatar2.png";
+            SelecionarAvatar(Avatar2);
+            avatarSelecionado = "Imagens/avatar2.jpg";
         }
 
         private void Avatar3_Click(object sender, RoutedEventArgs e)
         {
-            avatarSelecionado = "Images/avatar3.png";
+            SelecionarAvatar(Avatar3);
+            avatarSelecionado = "Imagens/avatar3.jpg";
         }
 
         private void Avatar4_Click(object sender, RoutedEventArgs e)
         {
-            avatarSelecionado = "Images/avatar4.png";
+            SelecionarAvatar(Avatar4);
+            avatarSelecionado = "Imagens/avatar4.jpg";
         }
 
         private void Avatar5_Click(object sender, RoutedEventArgs e)
         {
-            avatarSelecionado = "Images/avatar5.png";
+            SelecionarAvatar(Avatar5);
+            avatarSelecionado = "Imagens/avatar5.jpg"; 
         }
 
         // ==============================
@@ -71,7 +84,7 @@ namespace Projeto_Gerenciamento_usuarios_wpf
             string nome = TxtNome.Text.Trim();
             string username = TxtUsername.Text.Trim();
             string email = TxtEmail.Text.Trim();
-
+            
             string senha = TxtPassword.Password;
             string confirmarSenha = TxtConfirmPassword.Password;
 
@@ -202,6 +215,17 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                 return;
             }
 
+            if (ComboPerfil.SelectedIndex==-1)
+            {
+                MessageBox.Show(
+                     "Selecione o nivel de perfil.",
+                     "Cadastro",
+                     MessageBoxButton.OK,
+                     MessageBoxImage.Warning);
+
+                return;
+            }
+
             // ==============================
             // BANCO DE DADOS
             // ==============================
@@ -255,83 +279,80 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                     // DADOS AUTOMÁTICOS DO USUÁRIO
                     // ==============================
 
-                    string tipoUsuario = "Usuário";
-                    string perfilAcesso = "Usuário";
+                    string tipoUsuario = "usuario";
+                    string perfilAcesso = "usuario";
+
+                    if (ComboPerfil.Text == "Administrador")
+                    {
+                        tipoUsuario = "Administrador";
+                        perfilAcesso = "Administrador";
+                    }
+
                     string status = "Ativo";
 
                     // ==============================
                     // INSERE NO BANCO
                     // ==============================
 
-                    string sql = @"
+                   string sql = @"
                         INSERT INTO usuarios
                         (
-                            nome_completo,
-                            username,
-                            email,
-                            senha,
-                            avatar,
-                            tipo_usuario,
-                            perfil_acesso,
-                            status,
-                            tentativas_login,
-                            bloqueado_ate,
-                            data_criacao,
-                            data_alteracao
+                        nome_completo,
+                        username,
+                        email,
+                        senha,
+                        avatar,
+                        tipo_usuario,
+                        perfil_acesso,
+                        status,
+                        tentativas_login,
+                        bloqueado_ate,
+                        data_criacao,
+                        data_alteracao
                         )
                         VALUES
                         (
-                            @nome,
-                            @username,
-                            @email,
-                            @senha,
-                            @avatar,
-                            @tipo_usuario,
-                            @perfil_acesso,
-                            @status,
-                            0,
-                            NULL,
-                            UTC_TIMESTAMP(),
-                            UTC_TIMESTAMP()
-                        )";
+                        @nome,
+                        @username,
+                        @email,
+                        @senha,
+                        @avatar,
+                        @tipo_usuario,
+                        @perfil_acesso,
+                        @status,
+                        0,
+                        NULL,
+                        UTC_TIMESTAMP(),
+                        UTC_TIMESTAMP()
+                        );
+
+                        SELECT LAST_INSERT_ID();";
 
                     using (MySqlCommand command =
-                        new MySqlCommand(sql, connection))
+                    new MySqlCommand(sql, connection))
                     {
-                        command.Parameters.AddWithValue(
-                            "@nome", nome);
+                        command.Parameters.AddWithValue("@nome", nome);
+                        command.Parameters.AddWithValue("@username", username);
+                        command.Parameters.AddWithValue("@email", email);
+                        command.Parameters.AddWithValue("@senha", senhaHash);
+                        command.Parameters.AddWithValue("@avatar", avatarSelecionado);
+                        command.Parameters.AddWithValue("@tipo_usuario", tipoUsuario);
+                        command.Parameters.AddWithValue("@perfil_acesso", perfilAcesso);
+                        command.Parameters.AddWithValue("@status", status);
 
-                        command.Parameters.AddWithValue(
-                            "@username", username);
+                        long idNovoUsuario =
+                            Convert.ToInt64(command.ExecuteScalar());
 
-                        command.Parameters.AddWithValue(
-                            "@email", email);
+                        MessageBox.Show(
+                            "Usuário cadastrado com sucesso!",
+                            "Cadastro",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Information);
 
-                        command.Parameters.AddWithValue(
-                            "@senha", senhaHash);
-
-                        command.Parameters.AddWithValue(
-                            "@avatar", avatarSelecionado);
-
-                        command.Parameters.AddWithValue(
-                            "@tipo_usuario", tipoUsuario);
-
-                        command.Parameters.AddWithValue(
-                            "@perfil_acesso", perfilAcesso);
-
-                        command.Parameters.AddWithValue(
-                            "@status", status);
-
-                        command.ExecuteNonQuery();
+                        HubAdmin novo = new HubAdmin((int)idNovoUsuario);
+                        novo.Show();
+                        this.Close();
                     }
-
-                    MessageBox.Show(
-                        "Usuário cadastrado com sucesso!",
-                        "Cadastro",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Information);
-
-                    this.Close();
                 }
             }
             catch (MySqlException ex)

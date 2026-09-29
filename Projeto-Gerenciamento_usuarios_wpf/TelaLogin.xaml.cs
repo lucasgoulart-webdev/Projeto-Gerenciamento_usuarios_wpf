@@ -289,7 +289,7 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                                 perfilAcesso == "Administrador")
                             {
                                 HubAdmin hubAdmin =
-                                    new HubAdmin();
+                                    new HubAdmin(id);
 
                                 hubAdmin.Show();
                             }

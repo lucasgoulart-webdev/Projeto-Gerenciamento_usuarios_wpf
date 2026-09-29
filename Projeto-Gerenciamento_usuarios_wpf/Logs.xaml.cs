@@ -23,5 +23,15 @@ namespace Projeto_Gerenciamento_usuarios_wpf
         {
             InitializeComponent();
         }
+
+        private void BtnSearch_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void BtnBack_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
