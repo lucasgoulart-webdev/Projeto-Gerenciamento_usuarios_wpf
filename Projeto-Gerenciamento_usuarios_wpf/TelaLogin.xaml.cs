@@ -33,7 +33,7 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                     string sql = @"
                         SELECT COUNT(*)
                         FROM usuarios
-                        WHERE tipo_usuario = 'Admin'";
+                        WHERE tipo_usuario = 'Administrador'";
 
                     using (MySqlCommand command =
                         new MySqlCommand(sql, connection))
@@ -108,7 +108,6 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                             perfil_acesso,
                             status,
                             tentativas_login,
-                            bloqueado_ate
                         FROM usuarios
                         WHERE username = @username
                         LIMIT 1";
@@ -153,33 +152,12 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                                 Convert.ToInt32(
                                     reader["tentativas_login"]);
 
-                            DateTime? bloqueadoAte = null;
-
-                            if (reader["bloqueado_ate"] != DBNull.Value)
-                            {
-                                bloqueadoAte =
-                                    Convert.ToDateTime(
-                                        reader["bloqueado_ate"]);
-                            }
-
-                            // Verifica bloqueio temporário
-                            if (bloqueadoAte.HasValue &&
-                                bloqueadoAte.Value > DateTime.UtcNow)
-                            {
-                                MessageBox.Show(
-                                    "Usuário ou senha inválidos.",
-                                    "Login",
-                                    MessageBoxButton.OK,
-                                    MessageBoxImage.Warning);
-
-                                return;
-                            }
 
                             // Verifica se está ativo
                             if (status != "Ativo")
                             {
                                 MessageBox.Show(
-                                    "Usuário ou senha inválidos.",
+                                    "Este usuário se encontra em status: Desativado",
                                     "Login",
                                     MessageBoxButton.OK,
                                     MessageBoxImage.Warning);
@@ -200,16 +178,13 @@ namespace Projeto_Gerenciamento_usuarios_wpf
 
                                 tentativas++;
 
-                                // 5 tentativas = bloqueio por 5 minutos
-                                if (tentativas >= 5)
+                                // 5 tentativas = BLOCK
+                                if (tentativas > 5)
                                 {
                                     string bloquear = @"
                                         UPDATE usuarios
                                         SET tentativas_login = @tentativas,
-                                            bloqueado_ate =
-                                                DATE_ADD(
-                                                    UTC_TIMESTAMP(),
-                                                    INTERVAL 5 MINUTE)
+                                            status = 'Desativado'
                                         WHERE id = @id";
 
                                     using (MySqlCommand update =
@@ -267,7 +242,6 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                             string atualizarLogin = @"
                                 UPDATE usuarios
                                 SET tentativas_login = 0,
-                                    bloqueado_ate = NULL,
                                     status = 'Ativo',
                                     ultimo_login = UTC_TIMESTAMP()
                                 WHERE id = @id";

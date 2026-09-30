@@ -49,7 +49,7 @@ namespace Projeto_Gerenciamento_usuarios_wpf
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            Update criar2 = new Update();
+            Update criar2 = new Update(idLogado);
             criar2.Show();
             this.Close();
         }

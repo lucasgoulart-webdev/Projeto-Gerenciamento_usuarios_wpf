@@ -196,7 +196,7 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                         BCrypt.Net.BCrypt.HashPassword(senha);
 
                     // Dados automáticos do administrador
-                    string tipoUsuario = "Admin";
+                    string tipoUsuario = "Administrador";
                     string perfilAcesso = "Administrador";
                     string status = "Ativo";
 
