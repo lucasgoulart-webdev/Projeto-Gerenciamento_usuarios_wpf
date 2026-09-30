@@ -21,24 +21,28 @@ namespace Projeto_Gerenciamento_usuarios_wpf
     /// </summary>
     public partial class HubAdmin : Window
     {
-        private string conexao =
+        public string conexao =
             "Server=localhost;Database=projeto_usuarios;Uid=root;Pwd=;";
+
+        private int idLogado;
+
         public HubAdmin(int idUsuario)
         {
             InitializeComponent();
             carregar(idUsuario);
+            idLogado = idUsuario;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        public void Button_Click(object sender, RoutedEventArgs e)
         {
-            Create criar = new Create();
+            Create criar = new Create(idLogado);
             criar.Show();
             this.Close();
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            Read criar1 = new Read();
+            Read criar1 = new Read(idLogado);
             criar1.Show();
             this.Close();
         }
@@ -102,5 +106,7 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                 }
             }
         }
+
+        
     }
 }

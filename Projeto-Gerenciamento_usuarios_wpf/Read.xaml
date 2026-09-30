@@ -32,17 +32,16 @@
                Margin="40,65,0,0"
                VerticalAlignment="Top"
                Width="300"
-               Height="38"/>
+               Height="38" TextChanged="TxtPesquisa_TextChanged"/>
 
         <ui:Button
                Content="Search"
                x:Name="BtnSearch"
-               Click="BtnSearch_Click"
                HorizontalAlignment="Left"
                Margin="350,65,0,0"
                VerticalAlignment="Top"
                Width="110"
-               Height="38"/>
+               Height="38" Click="BtnSearch_Click"/>
 
 
         <!-- FILTRO DE PERFIL -->
@@ -60,7 +59,7 @@
                Margin="500,65,0,0"
                VerticalAlignment="Top"
                Width="130"
-               Height="38">
+               Height="38" SelectionChanged="CmbPerfil_SelectionChanged">
 
             <ComboBoxItem Content="Todos"/>
             <ComboBoxItem Content="Usuário"/>
@@ -84,7 +83,7 @@
                Margin="650,65,0,0"
                VerticalAlignment="Top"
                Width="130"
-               Height="38">
+               Height="38" SelectionChanged="CmbStatus_SelectionChanged">
 
             <ComboBoxItem Content="Todos"/>
             <ComboBoxItem Content="Ativo"/>
@@ -101,7 +100,7 @@
                Margin="30,125,30,70">
 
             <WrapPanel
-                   x:Name="UsersPanel"
+                   x:Name="PainelUsuarios"
                    HorizontalAlignment="Center">
 
                 <!--

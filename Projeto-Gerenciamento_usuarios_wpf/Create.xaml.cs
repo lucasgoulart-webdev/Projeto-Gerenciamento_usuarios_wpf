@@ -27,10 +27,13 @@ namespace Projeto_Gerenciamento_usuarios_wpf
 
         // Guarda o avatar escolhido
         private string avatarSelecionado = "";
+        private int AdminLogado;
 
-        public Create()
+        public Create(int idUsuario)
         {
             InitializeComponent();
+            AdminLogado = idUsuario;
+
         }
 
         private void SelecionarAvatar(Button selecionado)
@@ -349,7 +352,7 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                             MessageBoxButton.OK,
                             MessageBoxImage.Information);
 
-                        HubAdmin novo = new HubAdmin((int)idNovoUsuario);
+                        HubAdmin novo = new HubAdmin((int)AdminLogado);
                         novo.Show();
                         this.Close();
                     }
