@@ -107,7 +107,7 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                             tipo_usuario,
                             perfil_acesso,
                             status,
-                            tentativas_login,
+                            tentativas_login
                         FROM usuarios
                         WHERE username = @username
                         LIMIT 1";

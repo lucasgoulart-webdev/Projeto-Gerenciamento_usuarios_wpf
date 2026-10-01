@@ -59,12 +59,6 @@ namespace Projeto_Gerenciamento_usuarios_wpf
            //tela delete tem que passar argumento
         }
 
-        private void Button_Click_4(object sender, RoutedEventArgs e)
-        {
-            Unable criar4 = new Unable();
-            criar4.Show();
-            this.Close();
-        }
 
         private void Button_Click_5(object sender, RoutedEventArgs e)
         {

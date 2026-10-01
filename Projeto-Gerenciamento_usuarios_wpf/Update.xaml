@@ -155,66 +155,66 @@
             Margin="470,175,0,0"
             Width="290">
 
-            <Button
+            <Button x:Name="Avatar1"
                 Width="50"
                 Height="50"
                 Margin="4"
                 Padding="0"
                 Click="Avatar1_Click">
 
-                <Image
+                <Image 
                     Source="/Imagens/avatar1.jpg"
                     Stretch="UniformToFill"/>
 
             </Button>
 
-            <Button
+            <Button x:Name="Avatar2"
                 Width="50"
                 Height="50"
                 Margin="4"
                 Padding="0"
                 Click="Avatar2_Click">
 
-                <Image
+                <Image 
                     Source="/Imagens/avatar2.jpg"
                     Stretch="UniformToFill"/>
 
             </Button>
 
-            <Button
+            <Button x:Name="Avatar3"
                 Width="50"
                 Height="50"
                 Margin="4"
                 Padding="0"
                 Click="Avatar3_Click">
 
-                <Image
+                <Image 
                     Source="/Imagens/avatar3.jpg"
                     Stretch="UniformToFill"/>
 
             </Button>
 
-            <Button
+            <Button x:Name="Avatar4"
                 Width="50"
                 Height="50"
                 Margin="4"
                 Padding="0"
                 Click="Avatar4_Click">
 
-                <Image
+                <Image 
                     Source="/Imagens/avatar4.jpg"
                     Stretch="UniformToFill"/>
 
             </Button>
 
-            <Button
+            <Button x:Name="Avatar5"
                 Width="50"
                 Height="50"
                 Margin="4"
                 Padding="0"
                 Click="Avatar5_Click">
 
-                <Image
+                <Image 
                     Source="/Imagens/avatar5.jpg"
                     Stretch="UniformToFill"/>
 

@@ -282,8 +282,8 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                     // DADOS AUTOMÁTICOS DO USUÁRIO
                     // ==============================
 
-                    string tipoUsuario = "usuario";
-                    string perfilAcesso = "usuario";
+                    string tipoUsuario = "Usuário";
+                    string perfilAcesso = "Usuário";
 
                     if (ComboPerfil.Text == "Administrador")
                     {
@@ -297,39 +297,40 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                     // INSERE NO BANCO
                     // ==============================
 
-                   string sql = @"
-                        INSERT INTO usuarios
-                        (
-                        nome_completo,
-                        username,
-                        email,
-                        senha,
-                        avatar,
-                        tipo_usuario,
-                        perfil_acesso,
-                        status,
-                        tentativas_login,
-                        bloqueado_ate,
-                        data_criacao,
-                        data_alteracao
-                        )
-                        VALUES
-                        (
-                        @nome,
-                        @username,
-                        @email,
-                        @senha,
-                        @avatar,
-                        @tipo_usuario,
-                        @perfil_acesso,
-                        @status,
-                        0,
-                        NULL,
-                        UTC_TIMESTAMP(),
-                        UTC_TIMESTAMP()
-                        );
+                    string sql = @"
+                    INSERT INTO usuarios
+                    (
+                    nome_completo,
+                    username,
+                    email,
+                    senha,
+                    avatar,
+                    tipo_usuario,
+                    perfil_acesso,
+                    status,
+                    tentativas_login,
+                    bloqueado_ate,
+                    data_criacao,
+                    data_alteracao
+                    )
+                    VALUES
+                    (
+                    @nome,
+                    @username,
+                    @email,
+                    @senha,
+                    @avatar,
+                    @tipo_usuario,
+                    @perfil_acesso,
+                    @status,
+                    0,
+                    NULL,
+                    UTC_TIMESTAMP(),
+                    UTC_TIMESTAMP()
+                    );
 
-                        SELECT LAST_INSERT_ID();";
+                    SELECT LAST_INSERT_ID();";
+
 
                     using (MySqlCommand command =
                     new MySqlCommand(sql, connection))

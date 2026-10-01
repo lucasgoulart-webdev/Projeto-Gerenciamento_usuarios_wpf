@@ -127,15 +127,8 @@
             VerticalAlignment="Top" Click="Button_Click_3"/>
 
         <ui:Button
-            Content="Unable user"
-            Margin="536,272,0,0"
-            Grid.RowSpan="2"
-            VerticalAlignment="Top"
-            Width="204" Click="Button_Click_4"/>
-
-        <ui:Button
             Content="See logs"
-            Margin="536,309,0,0"
+            Margin="536,272,0,0"
             Grid.RowSpan="2"
             VerticalAlignment="Top"
             Width="204" Click="Button_Click_5"/>
