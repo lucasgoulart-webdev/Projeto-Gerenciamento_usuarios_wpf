@@ -173,6 +173,9 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                     cmd.ExecuteNonQuery();
 
                     MessageBox.Show("Cadastro realizado com sucesso");
+                    MainWindow abrir = new MainWindow(idLog);
+                    abrir.Show();
+                    this.Close();
                 }
 
             }
