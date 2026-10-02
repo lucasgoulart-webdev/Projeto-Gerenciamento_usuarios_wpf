@@ -197,6 +197,7 @@
                    VerticalAlignment="Top"
                    HorizontalAlignment="Center"
                    Height="35"
+                   FontFamily="Arial Black"
                    Width="128"/>
 
 
@@ -214,6 +215,7 @@
 
         </ComboBox>
         <Label Content="Acess level" HorizontalAlignment="Left" Margin="510,213,0,0" VerticalAlignment="Top" FontSize="16" FontFamily="Arial Black"/>
+        <ui:Button Content="Back" Margin="18,442,0,0" VerticalAlignment="Top" Width="149" FontFamily="Arial Black" Click="Button_Click"/>
 
     </Grid>
 

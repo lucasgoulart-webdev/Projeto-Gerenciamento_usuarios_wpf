@@ -75,6 +75,17 @@ namespace Projeto_Gerenciamento_usuarios_wpf
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+
+            if (string.IsNullOrWhiteSpace(avatarSelecionado))
+            {
+                MessageBox.Show(
+                    "Selecione uma imagem de perfil.",
+                    "Cadastro",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+
+                return;
+            }
             string nameUpdate = name.Text.Trim();
             string userUpdate = user.Text.Trim();
             string emailUpdate = email.Text.Trim();
@@ -227,6 +238,13 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                 user.Clear();
                 email.Clear();
             }
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            HubAdmin abrir = new HubAdmin(idlogin);
+            abrir.Show();
+            this.Close();
         }
     }
 }

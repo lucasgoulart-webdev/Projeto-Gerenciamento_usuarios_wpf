@@ -230,6 +230,7 @@
             Margin="520,382,0,0"
             VerticalAlignment="Top"
             Width="233" Click="Button_Click"/>
+        <ui:Button Content="Back" Margin="30,423,0,0" VerticalAlignment="Top" FontFamily="Arial Black" Width="162" Click="Button_Click_2"/>
 
     </Grid>
 </Window>

@@ -111,6 +111,7 @@
             </StackPanel>
 
         </Border>
+        <ui:Button Content="Back" Margin="0,442,0,0" VerticalAlignment="Top" HorizontalAlignment="Center" Click="Button_Click" Width="116" FontFamily="Arial Black"/>
 
     </Grid>
 

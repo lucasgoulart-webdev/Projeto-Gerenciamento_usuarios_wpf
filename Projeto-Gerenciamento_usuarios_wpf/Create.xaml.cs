@@ -376,5 +376,12 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                     MessageBoxImage.Error);
             }
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            HubAdmin abrir = new HubAdmin(AdminLogado);
+            abrir.Show();
+            this.Close();
+        }
     }
 }

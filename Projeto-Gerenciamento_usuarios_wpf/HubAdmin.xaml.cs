@@ -21,6 +21,8 @@ namespace Projeto_Gerenciamento_usuarios_wpf
     /// </summary>
     public partial class HubAdmin : Window
     {
+        public string NomeUser;
+
         public string conexao =
             "Server=localhost;Database=projeto_usuarios;Uid=root;Pwd=;";
 
@@ -31,6 +33,7 @@ namespace Projeto_Gerenciamento_usuarios_wpf
             InitializeComponent();
             carregar(idUsuario);
             idLogado = idUsuario;
+            Txtinicial.Content = $"Hello {NomeUser}, Welcome";
         }
 
         public void Button_Click(object sender, RoutedEventArgs e)
@@ -56,7 +59,9 @@ namespace Projeto_Gerenciamento_usuarios_wpf
 
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
-           //tela delete tem que passar argumento
+            Delete abrir = new Delete(idLogado);
+            abrir.Show();
+            this.Close();
         }
 
 
@@ -86,6 +91,7 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                     {
                         if (reader.Read())
                         {
+                            NomeUser = reader["nome_completo"].ToString();
                             Nome.Text = reader["nome_completo"].ToString();
                             email.Text = reader["email"].ToString();
                             perfil.Text = reader["perfil_acesso"].ToString();

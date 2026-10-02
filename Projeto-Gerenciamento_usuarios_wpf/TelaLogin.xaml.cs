@@ -270,7 +270,7 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                             else
                             {
                                 MainWindow hubUsuario =
-                                    new MainWindow();
+                                    new MainWindow(id);
 
                                 hubUsuario.Show();
                             }

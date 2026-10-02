@@ -23,6 +23,7 @@ namespace Projeto_Gerenciamento_usuarios_wpf
         public string conexao = "Server=localhost;Database=projeto_usuarios;Uid=root;Pwd=;";
 
         private int idAdmin;
+        public string admin;
         public Read(int idLogado)
         {
             InitializeComponent();
@@ -36,9 +37,19 @@ namespace Projeto_Gerenciamento_usuarios_wpf
 
         private void BtnBack_Click(object sender, RoutedEventArgs e)
         {
-            HubAdmin abrir = new HubAdmin(idAdmin);
-            abrir.Show();
-            this.Close();
+            if (admin == "adimistrador")
+            {
+                HubAdmin abrir = new HubAdmin(idAdmin);
+                abrir.Show();
+                this.Close();
+            }
+            else
+            {
+                MainWindow abrir = new MainWindow(idAdmin);
+                abrir.Show();
+                this.Close();
+            }
+            
         }
 
 
@@ -157,6 +168,7 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                 {
                     while (reader.Read())
                     {
+                        admin = reader["tipo_usuario"].ToString();
                         CriarCard(reader["nome_completo"].ToString(), reader["username"].ToString(), reader["email"].ToString(), reader["avatar"].ToString(), reader["tipo_usuario"].ToString(), reader["data_criacao"].ToString(), reader["ultimo_login"].ToString(), reader["bloqueado_ate"].ToString());   
                         
                     }

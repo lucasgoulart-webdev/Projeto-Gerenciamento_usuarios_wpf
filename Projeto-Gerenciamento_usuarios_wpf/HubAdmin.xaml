@@ -132,7 +132,7 @@
             Grid.RowSpan="2"
             VerticalAlignment="Top"
             Width="204" Click="Button_Click_5"/>
-        <ui:TextBox x:Name="txtInicial" HorizontalAlignment="Left" Margin="85,104,0,0" Grid.RowSpan="2" TextWrapping="Wrap" Text="Hello ADMIN, welcome!" VerticalAlignment="Top" Width="180"/>
+        <Label x:Name="Txtinicial" Content="Hello ADMIN, welcome!" HorizontalAlignment="Left" Margin="80,109,0,0" Grid.RowSpan="2" VerticalAlignment="Top" FontFamily="Arial Black" FontSize="16"/>
 
     </Grid>
 </Window>

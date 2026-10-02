@@ -25,31 +25,21 @@ namespace Projeto_Gerenciamento_usuarios_wpf
 
         // Dados do usuário que está conectado
         private int usuarioLogadoId;
-        private string tipoUsuarioLogado;
+        
 
-        public Delete(int idUsuarioLogado, string tipoUsuario)
+        public Delete(int idUsuarioLogado)
         {
             InitializeComponent();
 
             usuarioLogadoId = idUsuarioLogado;
-            tipoUsuarioLogado = tipoUsuario;
+            
         }
 
         private void BtnDelete_Click(object sender, RoutedEventArgs e)
         {
             string email = TxtEmail.Text.Trim();
 
-            // Verifica se quem está tentando excluir é administrador
-            if (tipoUsuarioLogado != "Admin")
-            {
-                MessageBox.Show(
-                    "Apenas administradores podem excluir usuários.",
-                    "Acesso negado",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Warning);
-
-                return;
-            }
+            
 
             // E-mail obrigatório
             if (string.IsNullOrWhiteSpace(email))
@@ -100,6 +90,7 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                                     "Exclusão",
                                     MessageBoxButton.OK,
                                     MessageBoxImage.Warning);
+                                    TxtEmail.Clear();
 
                                 return;
                             }
@@ -173,6 +164,7 @@ namespace Projeto_Gerenciamento_usuarios_wpf
 
                     if (confirmacao != MessageBoxResult.Yes)
                     {
+                        TxtEmail.Clear();
                         return;
                     }
 
@@ -215,6 +207,13 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
             }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            HubAdmin abrir = new HubAdmin(usuarioLogadoId);
+            abrir.Show();
+            this.Close();
         }
     }
 }

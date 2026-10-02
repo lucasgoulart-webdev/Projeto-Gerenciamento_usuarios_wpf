@@ -28,7 +28,7 @@
 
         <!-- MENSAGEM -->
 
-        <Label
+        <Label x:Name="txtInicial"
             Content="Hello USER_NAME, Welcome!"
             HorizontalAlignment="Left"
             Margin="108,98,0,0"
@@ -60,7 +60,7 @@
                     CornerRadius="40"
                     Margin="0,5,0,10">
 
-                    <Image
+                    <Image x:Name="imagem"
                         Source="Images/avatar1.png"
                         Stretch="UniformToFill"/>
 
@@ -69,7 +69,7 @@
 
                 <!-- NOME -->
 
-                <TextBlock
+                <TextBlock x:Name="Nome_completo"
                     Text="USER NAME"
                     FontSize="18"
                     FontWeight="Bold"
@@ -79,8 +79,9 @@
 
                 <!-- NOME DE USUÁRIO -->
 
-                <TextBlock
-                    Text="@username"
+                <TextBlock 
+                    x:Name="username"
+                    
                     FontSize="14"
                     HorizontalAlignment="Center"
                     Margin="0,4,0,0"
@@ -89,7 +90,8 @@
 
                 <!-- TIPO DE USUÁRIO -->
 
-                <TextBlock
+                <TextBlock x:Name="tipoUser"
+                    
                     Text="Tipo de usuário: Usuário"
                     FontSize="13"
                     HorizontalAlignment="Center"
@@ -99,8 +101,8 @@
 
                 <!-- NÍVEL / PERFIL -->
 
-                <TextBlock
-                    Text="Perfil de acesso: Usuário"
+                <TextBlock x:Name="email"
+                    Text="EMAIL"
                     FontSize="13"
                     HorizontalAlignment="Center"
                     Margin="0,3,0,0"
@@ -109,7 +111,7 @@
 
                 <!-- ÚLTIMO LOGIN -->
 
-                <TextBlock
+                <TextBlock x:Name="lastLogin"
                     Text="Último login: 27/09/2026"
                     FontSize="13"
                     HorizontalAlignment="Center"
@@ -125,11 +127,11 @@
 
         <ui:Button
             Content="See users"
-            Margin="570,220,0,0"
+            Margin="565,287,0,0"
             VerticalAlignment="Top"
-            HorizontalAlignment="Left"
             Height="64"
-            Width="150"/>
+            Width="150" Click="Button_Click"/>
+        <ui:Button Content="Edit Profile" Margin="565,180,0,0" VerticalAlignment="Top" Width="150" Height="64" Click="Button_Click_1"/>
 
     </Grid>
 
