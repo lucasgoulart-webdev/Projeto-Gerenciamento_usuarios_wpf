@@ -1,43 +1,76 @@
-﻿using MySql.Data.MySqlClient;
+```csharp
+using MySql.Data.MySqlClient;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Projeto_Gerenciamento_usuarios_wpf
 {
     /// <summary>
-    /// Lógica interna para Read.xaml
+    /// Internal logic for Read.xaml
     /// </summary>
     public partial class Read : Window
     {
         public string conexao = "Server=localhost;Database=projeto_usuarios;Uid=root;Pwd=;";
 
         private int idAdmin;
-        public string admin;
+        private string perfilUsuarioLogado = "";
+
         public Read(int idLogado)
         {
             InitializeComponent();
-            carregarUsuarios();
-
 
             idAdmin = idLogado;
+
+            CarregarPerfilUsuarioLogado();
+            carregarUsuarios();
         }
 
-        
+        // ==============================
+        // LOAD LOGGED USER PROFILE
+        // ==============================
+
+        private void CarregarPerfilUsuarioLogado()
+        {
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(conexao))
+                {
+                    connection.Open();
+
+                    string sql = @"
+                        SELECT perfil_acesso
+                        FROM usuarios
+                        WHERE id = @id";
+
+                    using (MySqlCommand command = new MySqlCommand(sql, connection))
+                    {
+                        command.Parameters.AddWithValue("@id", idAdmin);
+
+                        object resultado = command.ExecuteScalar();
+
+                        if (resultado != null)
+                        {
+                            perfilUsuarioLogado = resultado.ToString();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error loading user profile:\n" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        // ==============================
+        // BACK BUTTON
+        // ==============================
 
         private void BtnBack_Click(object sender, RoutedEventArgs e)
         {
-            if (admin == "adimistrador")
+            if (perfilUsuarioLogado == "Administrador")
             {
                 HubAdmin abrir = new HubAdmin(idAdmin);
                 abrir.Show();
@@ -49,21 +82,33 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                 abrir.Show();
                 this.Close();
             }
-            
         }
 
+        // ==============================
+        // CREATE USER CARD
+        // ==============================
 
-
-        private void CriarCard(string nomeCompleto, string user, string email, string avatar, string tipoUser, string dataCriacao, string lastLogin, string bloqueado)
+        private void CriarCard(string nomeCompleto, string user, string email, string avatar, string tipoUser, string dataCriacao, string lastLogin, string status)
         {
-            if (lastLogin == "")
+            if (string.IsNullOrWhiteSpace(lastLogin))
             {
-                lastLogin = "Login não efetuado";
+                lastLogin = "Login not performed";
             }
 
-            if (bloqueado=="")
+            if (string.IsNullOrWhiteSpace(status))
             {
-                bloqueado = "ATIVO";
+                status = "Unknown";
+            }
+
+            string statusExibicao = status;
+
+            if (status == "Ativo")
+            {
+                statusExibicao = "ACTIVE";
+            }
+            else if (status == "Desativado")
+            {
+                statusExibicao = "DISABLED";
             }
 
             Border card = new Border
@@ -91,16 +136,13 @@ namespace Projeto_Gerenciamento_usuarios_wpf
 
             try
             {
-                imagemAvatar.Source = new BitmapImage(
-                    new Uri(avatar, UriKind.RelativeOrAbsolute)
-                );
+                imagemAvatar.Source = new BitmapImage(new Uri(avatar, UriKind.RelativeOrAbsolute));
             }
             catch
             {
-                // Caso o caminho da imagem esteja errado
+                // Keeps the card without an image if the path is invalid
             }
 
-            
             TextBlock nomeText = new TextBlock
             {
                 Text = nomeCompleto,
@@ -108,19 +150,16 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                 FontWeight = FontWeights.Bold
             };
 
-        
             TextBlock usuarioText = new TextBlock
             {
-                Text = "user: " + user
+                Text = "User: " + user
             };
 
-         
             TextBlock emailText = new TextBlock
             {
                 Text = email
             };
 
-       
             TextBlock tipoText = new TextBlock
             {
                 Text = tipoUser
@@ -128,156 +167,58 @@ namespace Projeto_Gerenciamento_usuarios_wpf
 
             TextBlock loginText = new TextBlock
             {
-
-                Text = "Último login: " + lastLogin
+                Text = "Last login: " + lastLogin
             };
 
-            TextBlock blockedText = new TextBlock
+            TextBlock statusText = new TextBlock
             {
-
-                Text = bloqueado
+                Text = "Status: " + statusExibicao
             };
 
-
-            conteudo.Children.Add(imagemAvatar);              // Adicionando os elementos no card
+            conteudo.Children.Add(imagemAvatar);
             conteudo.Children.Add(nomeText);
             conteudo.Children.Add(usuarioText);
             conteudo.Children.Add(emailText);
             conteudo.Children.Add(tipoText);
             conteudo.Children.Add(loginText);
-            conteudo.Children.Add(blockedText);
+            conteudo.Children.Add(statusText);
 
             card.Child = conteudo;
 
             PainelUsuarios.Children.Add(card);
         }
 
+        // ==============================
+        // LOAD ALL USERS
+        // ==============================
 
         private void carregarUsuarios()
         {
             PainelUsuarios.Children.Clear();
 
-            using (MySqlConnection coon = new MySqlConnection(conexao))
+            try
             {
-                coon.Open();
-
-                string sql = "SELECT nome_completo, username, email, avatar, tipo_usuario, data_criacao, ultimo_login, bloqueado_ate FROM usuarios";
-
-                using (MySqlCommand cmd = new MySqlCommand(sql, coon))
-                using (MySqlDataReader reader = cmd.ExecuteReader())
+                using (MySqlConnection coon = new MySqlConnection(conexao))
                 {
-                    while (reader.Read())
-                    {
-                        admin = reader["tipo_usuario"].ToString();
-                        CriarCard(reader["nome_completo"].ToString(), reader["username"].ToString(), reader["email"].ToString(), reader["avatar"].ToString(), reader["tipo_usuario"].ToString(), reader["data_criacao"].ToString(), reader["ultimo_login"].ToString(), reader["bloqueado_ate"].ToString());   
-                        
-                    }
-                }
-                
+                    coon.Open();
 
-                
-            }
+                    string sql = @"
+                        SELECT
+                            nome_completo,
+                            username,
+                            email,
+                            avatar,
+                            tipo_usuario,
+                            data_criacao,
+                            ultimo_login,
+                            status
+                        FROM usuarios";
 
-        }
-
-        private void BtnSearch_Click(object sender, RoutedEventArgs e)
-        {
-
-            string nomeBusca = TxtPesquisa.Text.Trim();
-
-            PainelUsuarios.Children.Clear();
-
-            using (MySqlConnection coon = new MySqlConnection(conexao))
-            {
-                coon.Open();
-
-                string sql = "SELECT nome_completo, username, email, avatar, tipo_usuario, data_criacao, ultimo_login, bloqueado_ate FROM usuarios WHERE nome_completo LIKE @nome";
-
-                using (MySqlCommand cmd = new MySqlCommand(sql, coon))
-                {
-
-                    cmd.Parameters.AddWithValue("@nome","%" + nomeBusca + "%");
-
+                    using (MySqlCommand cmd = new MySqlCommand(sql, coon))
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
-                        bool encontrou = false;
-
                         while (reader.Read())
                         {
-                            encontrou= true;
-                            CriarCard(reader["nome_completo"].ToString(), reader["username"].ToString(), reader["email"].ToString(), reader["avatar"].ToString(), reader["tipo_usuario"].ToString(), reader["data_criacao"].ToString(), reader["ultimo_login"].ToString(), reader["bloqueado_ate"].ToString());
-
-                        }
-                        if (!encontrou)
-                        {
-                            MessageBox.Show("Nenhum usuário encontrado!");
-                        }
-                    }
-                }
-
-               
-
-
-
-            }
-        }
-
-
-            private void FiltrarUsuarios()
-            {
-            PainelUsuarios.Children.Clear();
-
-            using (MySqlConnection coon = new MySqlConnection(conexao))
-            {
-                coon.Open();
-
-                string sql = @"SELECT nome_completo, username, email, avatar ,tipo_usuario, data_criacao, ultimo_login, bloqueado_ate FROM usuarios  WHERE 1=1";
-            
-                   
-            
-           
-
-                using (MySqlCommand cmd = new MySqlCommand())
-                {
-                    cmd.Connection = coon;
-
-                    //  PERFIL
-                    if (CmbPerfil.SelectedItem != null)
-                    {
-                        string perfil = ((ComboBoxItem)CmbPerfil.SelectedItem).Content.ToString();
-
-                        if (perfil != "Todos")
-                        {
-                            sql += " AND tipo_usuario = @perfil";
-                            cmd.Parameters.AddWithValue("@perfil", perfil);
-                        }
-                    }
-
-                    // STATUS
-                    if (CmbStatus.SelectedItem != null)
-                    {
-                        string status = ((ComboBoxItem)CmbStatus.SelectedItem).Content.ToString();
-
-                        if (status == "Ativo")
-                        {
-                            sql += " AND bloqueado_ate IS NULL";
-                        }
-                        else if (status == "Bloqueado")
-                        {
-                            sql += " AND bloqueado_ate IS NOT NULL";
-                        }
-                    }
-
-                    cmd.CommandText = sql;
-
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        bool encontrou = false;
-
-                        while (reader.Read())
-                        {
-                            encontrou = true;
-
                             CriarCard(
                                 reader["nome_completo"].ToString(),
                                 reader["username"].ToString(),
@@ -286,19 +227,179 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                                 reader["tipo_usuario"].ToString(),
                                 reader["data_criacao"].ToString(),
                                 reader["ultimo_login"].ToString(),
-                                reader["bloqueado_ate"].ToString()
+                                reader["status"].ToString()
                             );
-                        }
-
-                        if (!encontrou)
-                        {
-                            MessageBox.Show("Nenhum usuário encontrado!");
                         }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error loading users:\n" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
-        
+
+        // ==============================
+        // SEARCH
+        // ==============================
+
+        private void BtnSearch_Click(object sender, RoutedEventArgs e)
+        {
+            string nomeBusca = TxtPesquisa.Text.Trim();
+
+            PainelUsuarios.Children.Clear();
+
+            try
+            {
+                using (MySqlConnection coon = new MySqlConnection(conexao))
+                {
+                    coon.Open();
+
+                    string sql = @"
+                        SELECT
+                            nome_completo,
+                            username,
+                            email,
+                            avatar,
+                            tipo_usuario,
+                            data_criacao,
+                            ultimo_login,
+                            status
+                        FROM usuarios
+                        WHERE nome_completo LIKE @nome";
+
+                    using (MySqlCommand cmd = new MySqlCommand(sql, coon))
+                    {
+                        cmd.Parameters.AddWithValue("@nome", "%" + nomeBusca + "%");
+
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            bool encontrou = false;
+
+                            while (reader.Read())
+                            {
+                                encontrou = true;
+
+                                CriarCard(
+                                    reader["nome_completo"].ToString(),
+                                    reader["username"].ToString(),
+                                    reader["email"].ToString(),
+                                    reader["avatar"].ToString(),
+                                    reader["tipo_usuario"].ToString(),
+                                    reader["data_criacao"].ToString(),
+                                    reader["ultimo_login"].ToString(),
+                                    reader["status"].ToString()
+                                );
+                            }
+
+                            if (!encontrou)
+                            {
+                                MessageBox.Show("No users found!", "Search", MessageBoxButton.OK, MessageBoxImage.Information);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error searching users:\n" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        // ==============================
+        // FILTER USERS
+        // ==============================
+
+        private void FiltrarUsuarios()
+        {
+            PainelUsuarios.Children.Clear();
+
+            try
+            {
+                using (MySqlConnection coon = new MySqlConnection(conexao))
+                {
+                    coon.Open();
+
+                    string sql = @"
+                        SELECT
+                            nome_completo,
+                            username,
+                            email,
+                            avatar,
+                            tipo_usuario,
+                            data_criacao,
+                            ultimo_login,
+                            status
+                        FROM usuarios
+                        WHERE 1=1";
+
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = coon;
+
+                        // PROFILE
+                        if (CmbPerfil.SelectedItem != null)
+                        {
+                            string perfil = ((ComboBoxItem)CmbPerfil.SelectedItem).Content.ToString();
+
+                            if (perfil != "Todos" && perfil != "All")
+                            {
+                                sql += " AND tipo_usuario = @perfil";
+                                cmd.Parameters.AddWithValue("@perfil", perfil);
+                            }
+                        }
+
+                        // STATUS
+                        if (CmbStatus.SelectedItem != null)
+                        {
+                            string status = ((ComboBoxItem)CmbStatus.SelectedItem).Content.ToString();
+
+                            if (status == "Ativo" || status == "Active")
+                            {
+                                sql += " AND status = 'Ativo'";
+                            }
+                            else if (status == "Desativado" || status == "Disabled" || status == "Bloqueado" || status == "Blocked")
+                            {
+                                sql += " AND status = 'Desativado'";
+                            }
+                        }
+
+                        cmd.CommandText = sql;
+
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            bool encontrou = false;
+
+                            while (reader.Read())
+                            {
+                                encontrou = true;
+
+                                CriarCard(
+                                    reader["nome_completo"].ToString(),
+                                    reader["username"].ToString(),
+                                    reader["email"].ToString(),
+                                    reader["avatar"].ToString(),
+                                    reader["tipo_usuario"].ToString(),
+                                    reader["data_criacao"].ToString(),
+                                    reader["ultimo_login"].ToString(),
+                                    reader["status"].ToString()
+                                );
+                            }
+
+                            if (!encontrou)
+                            {
+                                MessageBox.Show("No users found!", "Filter", MessageBoxButton.OK, MessageBoxImage.Information);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error filtering users:\n" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
         private void CmbPerfil_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             FiltrarUsuarios();
@@ -318,3 +419,4 @@ namespace Projeto_Gerenciamento_usuarios_wpf
         }
     }
 }
+```
