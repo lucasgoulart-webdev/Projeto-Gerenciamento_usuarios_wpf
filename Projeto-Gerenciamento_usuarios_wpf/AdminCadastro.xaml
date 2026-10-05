@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:Projeto_Gerenciamento_usuarios_wpf"
         xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
         x:Class="Projeto_Gerenciamento_usuarios_wpf.AdminCadastro"
+         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
         Title="AdminCadastro" Height="600" Width="800">
 

@@ -1,9 +1,7 @@
-
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace Projeto_Gerenciamento_usuarios_wpf
 {
@@ -20,9 +18,6 @@ namespace Projeto_Gerenciamento_usuarios_wpf
             InitializeComponent();
 
             idLogado = idUsuario;
-
-            // Selects "All" by default
-            CmbOperacao.SelectedIndex = 0;
 
             // Loads the logs when the page opens
             CarregarLogs();
@@ -107,19 +102,12 @@ namespace Projeto_Gerenciamento_usuarios_wpf
         }
 
         // ==============================
-        // SEARCH / FILTER
+        // SEARCH
         // ==============================
 
         private void BtnSearch_Click(object sender, RoutedEventArgs e)
         {
             string pesquisa = TxtPesquisa.Text.Trim();
-            string operacaoSelecionada = "";
-
-            if (CmbOperacao.SelectedItem is ComboBoxItem item)
-            {
-                operacaoSelecionada = item.Content.ToString();
-            }
-
             List<AuditoriaLog> logs = new List<AuditoriaLog>();
 
             try
@@ -150,12 +138,6 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                             )";
                     }
 
-                    // Operation filter
-                    if (!string.IsNullOrWhiteSpace(operacaoSelecionada) && operacaoSelecionada != "Todas" && operacaoSelecionada != "All")
-                    {
-                        sql += " AND operacao LIKE @operacao";
-                    }
-
                     sql += " ORDER BY data_hora DESC";
 
                     using (MySqlCommand command = new MySqlCommand(sql, connection))
@@ -163,11 +145,6 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                         if (!string.IsNullOrWhiteSpace(pesquisa))
                         {
                             command.Parameters.AddWithValue("@pesquisa", "%" + pesquisa + "%");
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(operacaoSelecionada) && operacaoSelecionada != "Todas" && operacaoSelecionada != "All")
-                        {
-                            command.Parameters.AddWithValue("@operacao", "%" + operacaoSelecionada + "%");
                         }
 
                         using (MySqlDataReader reader = command.ExecuteReader())
@@ -224,4 +201,3 @@ namespace Projeto_Gerenciamento_usuarios_wpf
         }
     }
 }
-

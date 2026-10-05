@@ -4,7 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Projeto_Gerenciamento_usuarios_wpf"
-        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml" x:Class="Projeto_Gerenciamento_usuarios_wpf.editarPerfil"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml" 
+         WindowStartupLocation="CenterScreen"
+        x:Class="Projeto_Gerenciamento_usuarios_wpf.editarPerfil"
         mc:Ignorable="d"
         Title="editarPerfil" Height="450" Width="800">
     <Grid Background="#FFAA99D1">

@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Projeto_Gerenciamento_usuarios_wpf"
         xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+        WindowStartupLocation="CenterScreen"
         x:Class="Projeto_Gerenciamento_usuarios_wpf.Delete"
         mc:Ignorable="d"
         Title="Delete"
