@@ -8,7 +8,7 @@ using System.Windows.Controls;
 namespace Projeto_Gerenciamento_usuarios_wpf
 {
     /// <summary>
-    /// Lógica interna para Logs.xaml
+    /// Internal logic for Logs.xaml
     /// </summary>
     public partial class Logs : Window
     {
@@ -21,15 +21,15 @@ namespace Projeto_Gerenciamento_usuarios_wpf
 
             idLogado = idUsuario;
 
-            // Deixa "Todas" selecionado inicialmente
+            // Selects "All" by default
             CmbOperacao.SelectedIndex = 0;
 
-            // Carrega os logs assim que a tela abre
+            // Loads the logs when the page opens
             CarregarLogs();
         }
 
         // ==============================
-        // CLASSE DOS LOGS
+        // LOG CLASS
         // ==============================
 
         public class AuditoriaLog
@@ -43,7 +43,7 @@ namespace Projeto_Gerenciamento_usuarios_wpf
         }
 
         // ==============================
-        // CARREGAR LOGS
+        // LOAD LOGS
         // ==============================
 
         private void CarregarLogs()
@@ -98,16 +98,16 @@ namespace Projeto_Gerenciamento_usuarios_wpf
             }
             catch (MySqlException ex)
             {
-                MessageBox.Show("Erro ao carregar os logs:\n" + ex.Message, "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Error loading audit logs:\n" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Erro ao carregar os logs:\n" + ex.Message, "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Error loading audit logs:\n" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         // ==============================
-        // PESQUISAR / FILTRAR
+        // SEARCH / FILTER
         // ==============================
 
         private void BtnSearch_Click(object sender, RoutedEventArgs e)
@@ -139,7 +139,7 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                         FROM auditoria
                         WHERE 1 = 1";
 
-                    // Pesquisa pelo responsável, operação ou registro afetado
+                    // Searches by responsible user, operation or affected record
                     if (!string.IsNullOrWhiteSpace(pesquisa))
                     {
                         sql += @"
@@ -150,8 +150,8 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                             )";
                     }
 
-                    // Filtro de operação
-                    if (!string.IsNullOrWhiteSpace(operacaoSelecionada) && operacaoSelecionada != "Todas")
+                    // Operation filter
+                    if (!string.IsNullOrWhiteSpace(operacaoSelecionada) && operacaoSelecionada != "Todas" && operacaoSelecionada != "All")
                     {
                         sql += " AND operacao LIKE @operacao";
                     }
@@ -165,7 +165,7 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                             command.Parameters.AddWithValue("@pesquisa", "%" + pesquisa + "%");
                         }
 
-                        if (!string.IsNullOrWhiteSpace(operacaoSelecionada) && operacaoSelecionada != "Todas")
+                        if (!string.IsNullOrWhiteSpace(operacaoSelecionada) && operacaoSelecionada != "Todas" && operacaoSelecionada != "All")
                         {
                             command.Parameters.AddWithValue("@operacao", "%" + operacaoSelecionada + "%");
                         }
@@ -198,22 +198,22 @@ namespace Projeto_Gerenciamento_usuarios_wpf
 
                     if (logs.Count == 0)
                     {
-                        MessageBox.Show("Nenhum registro de auditoria foi encontrado.", "Auditoria", MessageBoxButton.OK, MessageBoxImage.Information);
+                        MessageBox.Show("No audit records were found.", "Audit Logs", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                 }
             }
             catch (MySqlException ex)
             {
-                MessageBox.Show("Erro ao pesquisar os logs:\n" + ex.Message, "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Error searching audit logs:\n" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Erro ao pesquisar os logs:\n" + ex.Message, "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Error searching audit logs:\n" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         // ==============================
-        // VOLTAR
+        // BACK
         // ==============================
 
         private void BtnBack_Click(object sender, RoutedEventArgs e)
