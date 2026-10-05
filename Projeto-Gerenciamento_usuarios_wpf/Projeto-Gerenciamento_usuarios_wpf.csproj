@@ -131,6 +131,9 @@
     <Compile Include="Read.xaml.cs">
       <DependentUpon>Read.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Redefinir_senha.xaml.cs">
+      <DependentUpon>Redefinir_senha.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TelaLogin.xaml.cs">
       <DependentUpon>TelaLogin.xaml</DependentUpon>
     </Compile>
@@ -174,6 +177,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Read.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Redefinir_senha.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

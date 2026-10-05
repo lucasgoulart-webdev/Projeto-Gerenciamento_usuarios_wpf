@@ -1,4 +1,4 @@
-```csharp
+
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -368,4 +368,4 @@ namespace Projeto_Gerenciamento_usuarios_wpf
         }
     }
 }
-```
+

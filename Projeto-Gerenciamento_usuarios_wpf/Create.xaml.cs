@@ -1,4 +1,4 @@
-```csharp
+
 using System;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -348,7 +348,8 @@ namespace Projeto_Gerenciamento_usuarios_wpf
             }
         }
 
-        private void BtnBack_Click(object sender, RoutedEventArgs e)
+
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
             HubAdmin novo = new HubAdmin(AdminLogado);
             novo.Show();
@@ -356,4 +357,4 @@ namespace Projeto_Gerenciamento_usuarios_wpf
         }
     }
 }
-```
+

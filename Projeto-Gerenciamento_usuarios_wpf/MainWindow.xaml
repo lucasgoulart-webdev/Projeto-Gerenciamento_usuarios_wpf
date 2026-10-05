@@ -131,7 +131,8 @@
             VerticalAlignment="Top"
             Height="64"
             Width="150" Click="Button_Click"/>
-        <ui:Button Content="Edit Profile" Margin="565,180,0,0" VerticalAlignment="Top" Width="150" Height="64" Click="Button_Click_1"/>
+        <ui:Button Content="Edit Profile" Margin="565,204,0,0" VerticalAlignment="Top" Width="150" Height="64" Click="Button_Click_1"/>
+        <ui:Button Content="Change Password" Margin="565,124,0,0" VerticalAlignment="Top" Width="150" Height="62" Click="Button_Click_2"/>
 
     </Grid>
 

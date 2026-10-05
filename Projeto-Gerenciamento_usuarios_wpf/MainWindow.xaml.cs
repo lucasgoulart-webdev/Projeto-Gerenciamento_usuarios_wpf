@@ -74,5 +74,12 @@ namespace Projeto_Gerenciamento_usuarios_wpf
             abrir.Show();
             this.Close();
         }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            Redefinir_senha abrir = new Redefinir_senha(idLog);
+            abrir.Show();
+            this.Close();
+        }
     }
 }

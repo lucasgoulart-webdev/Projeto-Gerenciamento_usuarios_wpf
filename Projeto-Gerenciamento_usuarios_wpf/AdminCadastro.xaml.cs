@@ -1,4 +1,4 @@
-```csharp
+
 using System;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -251,4 +251,4 @@ namespace Projeto_Gerenciamento_usuarios_wpf
         }
     }
 }
-```
+

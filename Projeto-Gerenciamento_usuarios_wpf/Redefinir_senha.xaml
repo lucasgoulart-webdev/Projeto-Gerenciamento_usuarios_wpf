@@ -1,0 +1,18 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Projeto_Gerenciamento_usuarios_wpf"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml" x:Class="Projeto_Gerenciamento_usuarios_wpf.Redefinir_senha"
+        mc:Ignorable="d"
+        Title="Redefinir_senha" Height="450" Width="800">
+    <Grid Background="#FFB499D1">
+        <Label Content="Change Password" HorizontalAlignment="Center" Margin="0,33,0,0" VerticalAlignment="Top" Width="238" FontSize="24" FontFamily="Arial Black"/>
+
+        <ui:PasswordBox x:Name="TxtPassword" HorizontalAlignment="Center" Margin="0,209,0,0" TextWrapping="Wrap" Text="PasswordBox" VerticalAlignment="Top" Width="238"/>
+        <ui:Button Content="Set" Margin="0,354,0,0" VerticalAlignment="Top" HorizontalAlignment="Center" Click="Button_Click" Width="118"/>
+        <Label Content="Set your new password" HorizontalAlignment="Center" Margin="0,152,0,0" VerticalAlignment="Top" FontFamily="Arial Black"/>
+
+    </Grid>
+</Window>
