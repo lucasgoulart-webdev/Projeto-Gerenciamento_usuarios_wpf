@@ -1,29 +1,18 @@
 ```csharp
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using MySql.Data.MySqlClient;
 
 namespace Projeto_Gerenciamento_usuarios_wpf
 {
     /// <summary>
-    /// Lógica interna para Delete.xaml
+    /// Internal logic for Delete.xaml
     /// </summary>
     public partial class Delete : Window
     {
         private string conexao = "Server=localhost;Database=projeto_usuarios;Uid=root;Pwd=;";
 
-        // Dados do usuário que está conectado
+        // Logged user ID
         private int usuarioLogadoId;
 
         public Delete(int idUsuarioLogado)
@@ -36,10 +25,10 @@ namespace Projeto_Gerenciamento_usuarios_wpf
         {
             string email = TxtEmail.Text.Trim();
 
-            // E-mail obrigatório
+            // Email is required
             if (string.IsNullOrWhiteSpace(email))
             {
-                MessageBox.Show("Digite o e-mail do usuário que deseja excluir.", "Exclusão", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Enter the email of the user you want to delete.", "Delete User", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -49,7 +38,7 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                 {
                     connection.Open();
 
-                    // Procura o usuário pelo e-mail
+                    // Searches for the user by email
                     string buscar = @"
                         SELECT
                             id,
@@ -81,7 +70,7 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                         {
                             if (!reader.Read())
                             {
-                                MessageBox.Show("Nenhum usuário foi encontrado com esse e-mail.", "Exclusão", MessageBoxButton.OK, MessageBoxImage.Warning);
+                                MessageBox.Show("No user was found with this email.", "Delete User", MessageBoxButton.OK, MessageBoxImage.Warning);
                                 TxtEmail.Clear();
                                 return;
                             }
@@ -97,20 +86,20 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                         }
                     }
 
-                    // Impede o administrador de excluir a própria conta
+                    // Prevents the administrator from deleting their own account
                     if (idUsuario == usuarioLogadoId)
                     {
-                        MessageBox.Show("O administrador não pode excluir a própria conta enquanto estiver conectado.", "Exclusão não permitida", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        MessageBox.Show("You cannot delete your own account while logged in.", "Deletion Not Allowed", MessageBoxButton.OK, MessageBoxImage.Warning);
                         return;
                     }
 
-                    // Verifica se o usuário que será excluído é administrador
-                    if (tipoUsuario == "Admin")
+                    // Checks if the user being deleted is an administrator
+                    if (tipoUsuario == "Administrador")
                     {
                         string contarAdmins = @"
                             SELECT COUNT(*)
                             FROM usuarios
-                            WHERE tipo_usuario = 'Admin'";
+                            WHERE tipo_usuario = 'Administrador'";
 
                         int quantidadeAdmins;
 
@@ -119,21 +108,21 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                             quantidadeAdmins = Convert.ToInt32(command.ExecuteScalar());
                         }
 
-                        // Impede a exclusão do último administrador
+                        // Prevents deletion of the last administrator
                         if (quantidadeAdmins <= 1)
                         {
-                            MessageBox.Show("O último administrador do sistema não pode ser excluído.", "Exclusão não permitida", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            MessageBox.Show("The last administrator in the system cannot be deleted.", "Deletion Not Allowed", MessageBoxButton.OK, MessageBoxImage.Warning);
                             return;
                         }
                     }
 
-                    // Confirmação obrigatória antes da exclusão
+                    // Mandatory confirmation before deletion
                     MessageBoxResult confirmacao = MessageBox.Show(
-                        "Deseja realmente excluir este usuário?\n\n" +
+                        "Are you sure you want to delete this user?\n\n" +
                         nomeUsuario +
                         "\n" +
                         email,
-                        "Confirmar exclusão",
+                        "Confirm Deletion",
                         MessageBoxButton.YesNo,
                         MessageBoxImage.Question);
 
@@ -143,7 +132,7 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                         return;
                     }
 
-                    // Busca o username do administrador responsável
+                    // Gets the username of the responsible administrator
                     string adminUsername = "";
 
                     string buscarAdmin = @"
@@ -163,7 +152,7 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                         }
                     }
 
-                    // Exclui o usuário
+                    // Deletes the user
                     string excluir = @"
                         DELETE FROM usuarios
                         WHERE id = @id";
@@ -175,7 +164,7 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                     }
 
                     // ==============================
-                    // AUDITORIA
+                    // AUDIT
                     // ==============================
 
                     string inserirAuditoria = @"
@@ -202,14 +191,14 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                     {
                         commandAuditoria.Parameters.AddWithValue("@usuario_responsavel_id", usuarioLogadoId);
                         commandAuditoria.Parameters.AddWithValue("@usuario_responsavel", adminUsername);
-                        commandAuditoria.Parameters.AddWithValue("@operacao", "Exclusão de usuário");
-                        commandAuditoria.Parameters.AddWithValue("@registro_afetado", "ID: " + idUsuario + " - Usuário: " + username);
+                        commandAuditoria.Parameters.AddWithValue("@operacao", "User deletion");
+                        commandAuditoria.Parameters.AddWithValue("@registro_afetado", "ID: " + idUsuario + " - User: " + username);
 
-                        string valorAnterior = "Nome: " + nomeUsuario +
+                        string valorAnterior = "Name: " + nomeUsuario +
                                                "; Username: " + username +
-                                               "; E-mail: " + emailUsuario +
-                                               "; Tipo: " + tipoUsuario +
-                                               "; Perfil: " + perfilAcesso +
+                                               "; Email: " + emailUsuario +
+                                               "; Type: " + tipoUsuario +
+                                               "; Profile: " + perfilAcesso +
                                                "; Status: " + status +
                                                "; Avatar: " + avatar;
 
@@ -219,18 +208,18 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                         commandAuditoria.ExecuteNonQuery();
                     }
 
-                    MessageBox.Show("Usuário excluído com sucesso!", "Exclusão", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("User deleted successfully!", "Delete User", MessageBoxButton.OK, MessageBoxImage.Information);
 
                     TxtEmail.Clear();
                 }
             }
             catch (MySqlException ex)
             {
-                MessageBox.Show("Erro no banco de dados:\n" + ex.Message, "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Database error:\n" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Erro ao excluir usuário:\n" + ex.Message, "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Error deleting user:\n" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
