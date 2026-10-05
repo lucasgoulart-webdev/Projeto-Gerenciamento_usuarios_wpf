@@ -1,31 +1,20 @@
 ```csharp
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.Text.RegularExpressions;
 using MySql.Data.MySqlClient;
-using BCrypt.Net;
 
 namespace Projeto_Gerenciamento_usuarios_wpf
 {
     /// <summary>
-    /// Lógica interna para Create.xaml
+    /// Internal logic for Create.xaml
     /// </summary>
     public partial class Create : Window
     {
         private string conexao = "Server=localhost;Database=projeto_usuarios;Uid=root;Pwd=;";
 
-        // Guarda o avatar escolhido
+        // Stores the selected avatar
         private string avatarSelecionado = "";
         private int AdminLogado;
 
@@ -77,7 +66,7 @@ namespace Projeto_Gerenciamento_usuarios_wpf
         }
 
         // ==============================
-        // BOTÃO CREATE
+        // CREATE BUTTON
         // ==============================
 
         private void BtnCreate_Click(object sender, RoutedEventArgs e)
@@ -90,90 +79,90 @@ namespace Projeto_Gerenciamento_usuarios_wpf
             string confirmarSenha = TxtConfirmPassword.Password;
 
             // ==============================
-            // VALIDAÇÕES
+            // VALIDATIONS
             // ==============================
 
-            // Nome obrigatório
+            // Name is required
             if (string.IsNullOrWhiteSpace(nome))
             {
-                MessageBox.Show("O nome é obrigatório.", "Cadastro", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Name is required.", "Create User", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            // Username obrigatório
+            // Username is required
             if (string.IsNullOrWhiteSpace(username))
             {
-                MessageBox.Show("O nome de usuário é obrigatório.", "Cadastro", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Username is required.", "Create User", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            // Username mínimo de 3 caracteres
+            // Username must have at least 3 characters
             if (username.Length < 3)
             {
-                MessageBox.Show("O nome de usuário deve possuir no mínimo 3 caracteres.", "Cadastro", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Username must contain at least 3 characters.", "Create User", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            // E-mail obrigatório
+            // Email is required
             if (string.IsNullOrWhiteSpace(email))
             {
-                MessageBox.Show("O e-mail é obrigatório.", "Cadastro", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Email is required.", "Create User", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            // Formato do e-mail
+            // Email format
             string padraoEmail = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
 
             if (!Regex.IsMatch(email, padraoEmail))
             {
-                MessageBox.Show("Digite um e-mail válido.", "Cadastro", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Enter a valid email address.", "Create User", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            // Senha obrigatória
+            // Password is required
             if (string.IsNullOrWhiteSpace(senha))
             {
-                MessageBox.Show("A senha é obrigatória.", "Cadastro", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Password is required.", "Create User", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            // Senha mínima de 8 caracteres
+            // Password must have at least 8 characters
             if (senha.Length < 8)
             {
-                MessageBox.Show("A senha deve possuir no mínimo 8 caracteres.", "Cadastro", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Password must contain at least 8 characters.", "Create User", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            // Confirmação obrigatória
+            // Password confirmation is required
             if (string.IsNullOrWhiteSpace(confirmarSenha))
             {
-                MessageBox.Show("A confirmação da senha é obrigatória.", "Cadastro", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Password confirmation is required.", "Create User", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            // Senhas iguais
+            // Passwords must match
             if (senha != confirmarSenha)
             {
-                MessageBox.Show("A senha e a confirmação devem ser iguais.", "Cadastro", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Password and confirmation must match.", "Create User", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            // Avatar obrigatório
+            // Avatar is required
             if (string.IsNullOrWhiteSpace(avatarSelecionado))
             {
-                MessageBox.Show("Selecione uma imagem de perfil.", "Cadastro", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Select a profile image.", "Create User", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            // Perfil obrigatório
+            // Profile is required
             if (ComboPerfil.SelectedIndex == -1)
             {
-                MessageBox.Show("Selecione o nivel de perfil.", "Cadastro", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Select an access level.", "Create User", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
             // ==============================
-            // BANCO DE DADOS
+            // DATABASE
             // ==============================
 
             try
@@ -182,7 +171,7 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                 {
                     connection.Open();
 
-                    // Verifica username e e-mail duplicados
+                    // Checks for duplicate username or email
                     string verificar = @"
                         SELECT COUNT(*)
                         FROM usuarios
@@ -198,19 +187,19 @@ namespace Projeto_Gerenciamento_usuarios_wpf
 
                         if (quantidade > 0)
                         {
-                            MessageBox.Show("O nome de usuário ou e-mail já está cadastrado.", "Cadastro", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            MessageBox.Show("The username or email is already registered.", "Create User", MessageBoxButton.OK, MessageBoxImage.Warning);
                             return;
                         }
                     }
 
                     // ==============================
-                    // HASH DA SENHA
+                    // PASSWORD HASH
                     // ==============================
 
                     string senhaHash = BCrypt.Net.BCrypt.HashPassword(senha);
 
                     // ==============================
-                    // DADOS AUTOMÁTICOS DO USUÁRIO
+                    // AUTOMATIC USER DATA
                     // ==============================
 
                     string tipoUsuario = "Usuário";
@@ -225,7 +214,7 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                     string status = "Ativo";
 
                     // ==============================
-                    // INSERE NO BANCO
+                    // INSERT USER
                     // ==============================
 
                     string sql = @"
@@ -276,10 +265,10 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                         long idNovoUsuario = Convert.ToInt64(command.ExecuteScalar());
 
                         // ==============================
-                        // AUDITORIA
+                        // AUDIT
                         // ==============================
 
-                        // Busca o username do administrador logado
+                        // Gets the username of the logged administrator
                         string adminUsername = "";
 
                         string buscarAdmin = @"
@@ -299,7 +288,7 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                             }
                         }
 
-                        // Registra o cadastro na auditoria
+                        // Records the user creation in the audit table
                         string inserirAuditoria = @"
                             INSERT INTO auditoria
                             (
@@ -324,16 +313,16 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                         {
                             commandAuditoria.Parameters.AddWithValue("@usuario_responsavel_id", AdminLogado);
                             commandAuditoria.Parameters.AddWithValue("@usuario_responsavel", adminUsername);
-                            commandAuditoria.Parameters.AddWithValue("@operacao", "Cadastro de usuário");
-                            commandAuditoria.Parameters.AddWithValue("@registro_afetado", "ID: " + idNovoUsuario + " - Usuário: " + username);
+                            commandAuditoria.Parameters.AddWithValue("@operacao", "User creation");
+                            commandAuditoria.Parameters.AddWithValue("@registro_afetado", "ID: " + idNovoUsuario + " - User: " + username);
                             commandAuditoria.Parameters.AddWithValue("@valor_anterior", DBNull.Value);
 
-                            // A senha nunca é registrada na auditoria
-                            string novoValor = "Nome: " + nome +
+                            // Password is never recorded in the audit log
+                            string novoValor = "Name: " + nome +
                                                "; Username: " + username +
-                                               "; E-mail: " + email +
-                                               "; Tipo: " + tipoUsuario +
-                                               "; Perfil: " + perfilAcesso +
+                                               "; Email: " + email +
+                                               "; Type: " + tipoUsuario +
+                                               "; Profile: " + perfilAcesso +
                                                "; Status: " + status +
                                                "; Avatar: " + avatarSelecionado;
 
@@ -341,6 +330,30 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                             commandAuditoria.ExecuteNonQuery();
                         }
 
-                        MessageBox.Show("Usuário cadastrado com sucesso!", "Cadastro", MessageBoxButton.OK, MessageBoxImage.Information);
+                        MessageBox.Show("User created successfully!", "Create User", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                        HubAdmin novo = new HubAdmin(Admin
+                        HubAdmin novo = new HubAdmin(AdminLogado);
+                        novo.Show();
+                        this.Close();
+                    }
+                }
+            }
+            catch (MySqlException ex)
+            {
+                MessageBox.Show("Database error:\n" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error creating user:\n" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void BtnBack_Click(object sender, RoutedEventArgs e)
+        {
+            HubAdmin novo = new HubAdmin(AdminLogado);
+            novo.Show();
+            this.Close();
+        }
+    }
+}
+```
