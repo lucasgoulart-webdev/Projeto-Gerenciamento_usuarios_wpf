@@ -7,7 +7,7 @@ using BCrypt.Net;
 namespace Projeto_Gerenciamento_usuarios_wpf
 {
     /// <summary>
-    /// Lógica interna para TelaLogin.xaml
+    /// Internal logic for TelaLogin.xaml
     /// </summary>
     public partial class TelaLogin : Window
     {
@@ -19,7 +19,7 @@ namespace Projeto_Gerenciamento_usuarios_wpf
             VerificarAdministrador();
         }
 
-        // Verifica se já existe algum administrador cadastrado
+        // Checks if an administrator is already registered
         private void VerificarAdministrador()
         {
             try
@@ -37,13 +37,13 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                     {
                         int quantidadeAdmins = Convert.ToInt32(command.ExecuteScalar());
 
-                        // Se não existir nenhum administrador
+                        // If there are no administrators
                         if (quantidadeAdmins == 0)
                         {
                             MessageBox.Show(
-                                "Nenhum administrador foi cadastrado ainda.\n" +
-                                "Cadastre o primeiro administrador para continuar.",
-                                "Primeiro acesso",
+                                "No administrator has been registered yet.\n" +
+                                "Register the first administrator to continue.",
+                                "First Access",
                                 MessageBoxButton.OK,
                                 MessageBoxImage.Information);
 
@@ -57,20 +57,20 @@ namespace Projeto_Gerenciamento_usuarios_wpf
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Erro ao verificar administrador:\n" + ex.Message, "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Error checking administrator:\n" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        // BOTÃO LOGIN
+        // LOGIN BUTTON
         private void BtnLogin_Click(object sender, RoutedEventArgs e)
         {
             string username = TxtUsername.Text.Trim();
             string senha = TxtPassword.Password;
 
-            // Verifica campos vazios
+            // Checks empty fields
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(senha))
             {
-                MessageBox.Show("Usuário ou senha inválidos.", "Login", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Invalid username or password.", "Login", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -101,14 +101,14 @@ namespace Projeto_Gerenciamento_usuarios_wpf
 
                         using (MySqlDataReader reader = command.ExecuteReader())
                         {
-                            // Usuário não existe
+                            // User does not exist
                             if (!reader.Read())
                             {
                                 reader.Close();
 
-                                RegistrarEventoAutenticacao(connection, null, username, "Tentativa de login", "Usuário não encontrado");
+                                RegistrarEventoAutenticacao(connection, null, username, "Login attempt", "User not found");
 
-                                MessageBox.Show("Usuário ou senha inválidos.", "Login", MessageBoxButton.OK, MessageBoxImage.Warning);
+                                MessageBox.Show("Invalid username or password.", "Login", MessageBoxButton.OK, MessageBoxImage.Warning);
                                 return;
                             }
 
@@ -119,28 +119,28 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                             string perfilAcesso = reader["perfil_acesso"].ToString();
                             int tentativas = Convert.ToInt32(reader["tentativas_login"]);
 
-                            // Verifica se está ativo
+                            // Checks if the user is active
                             if (status != "Ativo")
                             {
                                 reader.Close();
 
-                                RegistrarEventoAutenticacao(connection, id, username, "Tentativa de login", "Usuário desativado");
+                                RegistrarEventoAutenticacao(connection, id, username, "Login attempt", "User disabled");
 
-                                MessageBox.Show("Este usuário se encontra em status: Desativado", "Login", MessageBoxButton.OK, MessageBoxImage.Warning);
+                                MessageBox.Show("This user is currently disabled.", "Login", MessageBoxButton.OK, MessageBoxImage.Warning);
                                 return;
                             }
 
-                            // Compara a senha com o HASH
+                            // Compares the password with the HASH
                             bool senhaCorreta = BCrypt.Net.BCrypt.Verify(senha, senhaHash);
 
-                            // SENHA INCORRETA
+                            // INCORRECT PASSWORD
                             if (!senhaCorreta)
                             {
                                 reader.Close();
 
                                 tentativas++;
 
-                                // 5 tentativas = DESATIVADO
+                                // 5 attempts = DISABLED
                                 if (tentativas >= 5)
                                 {
                                     string bloquear = @"
@@ -157,7 +157,7 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                                     }
 
                                     // ==============================
-                                    // AUDITORIA - DESATIVAÇÃO
+                                    // AUDIT - AUTOMATIC DEACTIVATION
                                     // ==============================
 
                                     string inserirAuditoria = @"
@@ -184,15 +184,15 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                                     {
                                         auditoria.Parameters.AddWithValue("@usuario_responsavel_id", id);
                                         auditoria.Parameters.AddWithValue("@usuario_responsavel", username);
-                                        auditoria.Parameters.AddWithValue("@operacao", "Desativação automática");
-                                        auditoria.Parameters.AddWithValue("@registro_afetado", "ID: " + id + " - Usuário: " + username);
-                                        auditoria.Parameters.AddWithValue("@valor_anterior", "Status: Ativo");
-                                        auditoria.Parameters.AddWithValue("@novo_valor", "Status: Desativado");
+                                        auditoria.Parameters.AddWithValue("@operacao", "Automatic deactivation");
+                                        auditoria.Parameters.AddWithValue("@registro_afetado", "ID: " + id + " - User: " + username);
+                                        auditoria.Parameters.AddWithValue("@valor_anterior", "Status: Active");
+                                        auditoria.Parameters.AddWithValue("@novo_valor", "Status: Disabled");
 
                                         auditoria.ExecuteNonQuery();
                                     }
 
-                                    RegistrarEventoAutenticacao(connection, id, username, "Tentativa de login", "Usuário desativado após 5 tentativas");
+                                    RegistrarEventoAutenticacao(connection, id, username, "Login attempt", "User disabled after 5 attempts");
                                 }
                                 else
                                 {
@@ -208,14 +208,14 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                                         update.ExecuteNonQuery();
                                     }
 
-                                    RegistrarEventoAutenticacao(connection, id, username, "Tentativa de login", "Senha incorreta");
+                                    RegistrarEventoAutenticacao(connection, id, username, "Login attempt", "Incorrect password");
                                 }
 
-                                MessageBox.Show("Usuário ou senha inválidos.", "Login", MessageBoxButton.OK, MessageBoxImage.Warning);
+                                MessageBox.Show("Invalid username or password.", "Login", MessageBoxButton.OK, MessageBoxImage.Warning);
                                 return;
                             }
 
-                            // LOGIN CORRETO
+                            // SUCCESSFUL LOGIN
                             reader.Close();
 
                             string atualizarLogin = @"
@@ -231,10 +231,10 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                                 update.ExecuteNonQuery();
                             }
 
-                            // Registra login realizado com sucesso
-                            RegistrarEventoAutenticacao(connection, id, username, "Login", "Sucesso");
+                            // Records successful login
+                            RegistrarEventoAutenticacao(connection, id, username, "Login", "Success");
 
-                            // IDENTIFICA AS PERMISSÕES
+                            // IDENTIFIES USER PERMISSIONS
                             if (tipoUsuario == "Admin" || perfilAcesso == "Administrador")
                             {
                                 HubAdmin hubAdmin = new HubAdmin(id);
@@ -253,12 +253,12 @@ namespace Projeto_Gerenciamento_usuarios_wpf
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Erro ao realizar o login:\n" + ex.Message, "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Error while logging in:\n" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         // ==============================
-        // EVENTOS DE AUTENTICAÇÃO
+        // AUTHENTICATION EVENTS
         // ==============================
 
         private void RegistrarEventoAutenticacao(MySqlConnection connection, int? usuarioId, string usuario, string tipoEvento, string resultado)
