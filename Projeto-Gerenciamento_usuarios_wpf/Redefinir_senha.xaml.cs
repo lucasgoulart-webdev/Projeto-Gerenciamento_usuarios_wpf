@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Windows;
 using MySql.Data.MySqlClient;
 using BCrypt.Net;
@@ -24,6 +23,19 @@ namespace Projeto_Gerenciamento_usuarios_wpf
         {
             string novaSenha = TxtPassword.Password;
 
+            if (string.IsNullOrWhiteSpace(novaSenha))
+            {
+                MessageBox.Show("Please enter a new password.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (novaSenha.Length < 8)
+            {
+                MessageBox.Show("The password must contain at least 8 characters.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                TxtPassword.Clear();
+                return;
+            }
+
             string novaSenhaHash = BCrypt.Net.BCrypt.HashPassword(novaSenha);
 
             try
@@ -46,6 +58,7 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                 }
 
                 MessageBox.Show("Password changed successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+
                 MainWindow abrir = new MainWindow(idLogado);
                 abrir.Show();
                 this.Close();

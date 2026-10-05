@@ -11,7 +11,7 @@
     <Grid Background="#FFB499D1">
         <Label Content="Change Password" HorizontalAlignment="Center" Margin="0,33,0,0" VerticalAlignment="Top" Width="238" FontSize="24" FontFamily="Arial Black"/>
 
-        <ui:PasswordBox x:Name="TxtPassword" HorizontalAlignment="Center" Margin="0,209,0,0" TextWrapping="Wrap" Text="PasswordBox" VerticalAlignment="Top" Width="238"/>
+        <ui:PasswordBox x:Name="TxtPassword" HorizontalAlignment="Center" Margin="0,209,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="238"/>
         <ui:Button Content="Set" Margin="0,354,0,0" VerticalAlignment="Top" HorizontalAlignment="Center" Click="Button_Click" Width="118"/>
         <Label Content="Set your new password" HorizontalAlignment="Center" Margin="0,152,0,0" VerticalAlignment="Top" FontFamily="Arial Black"/>
 
