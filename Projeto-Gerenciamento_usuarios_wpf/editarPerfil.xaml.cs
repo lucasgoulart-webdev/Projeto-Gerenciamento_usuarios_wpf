@@ -1,17 +1,8 @@
-﻿using MySql.Data.MySqlClient;
+```csharp
+using MySql.Data.MySqlClient;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Projeto_Gerenciamento_usuarios_wpf
 {
@@ -23,6 +14,12 @@ namespace Projeto_Gerenciamento_usuarios_wpf
         public string conexao = "Server=localhost;Database=projeto_usuarios;Uid=root;Pwd=;";
         public int idLog;
         public string avatarSelecionado;
+
+        // Valores anteriores para auditoria
+        private string nomeAnterior = "";
+        private string usernameAnterior = "";
+        private string emailAnterior = "";
+        private string avatarAnterior = "";
 
         public editarPerfil(int idLogado)
         {
@@ -41,7 +38,6 @@ namespace Projeto_Gerenciamento_usuarios_wpf
 
             selecionado.Opacity = 0.5;
         }
-
 
         private void Avatar1_Click(object sender, RoutedEventArgs e)
         {
@@ -75,110 +71,202 @@ namespace Projeto_Gerenciamento_usuarios_wpf
 
         void carregarUser()
         {
-            using (MySqlConnection coon = new MySqlConnection(conexao))
+            try
             {
-                coon.Open();
-
-                string query = "SELECT id, nome_completo, username, email, avatar FROM usuarios WHERE id=@id";
-
-                using (MySqlCommand cmd = new MySqlCommand(query, coon))
+                using (MySqlConnection coon = new MySqlConnection(conexao))
                 {
-                    cmd.Parameters.AddWithValue("@id", idLog);
+                    coon.Open();
 
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    string query = "SELECT id, nome_completo, username, email, avatar FROM usuarios WHERE id = @id";
+
+                    using (MySqlCommand cmd = new MySqlCommand(query, coon))
                     {
-                        if (reader.Read())
+                        cmd.Parameters.AddWithValue("@id", idLog);
+
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
-                            name.Text = reader["nome_completo"].ToString();
-                            username.Text = reader["username"].ToString();
-                            email.Text = reader["email"].ToString();
-                            avatarSelecionado = reader["avatar"].ToString();
+                            if (reader.Read())
+                            {
+                                name.Text = reader["nome_completo"].ToString();
+                                username.Text = reader["username"].ToString();
+                                email.Text = reader["email"].ToString();
+                                avatarSelecionado = reader["avatar"].ToString();
+
+                                // Guarda os valores originais
+                                nomeAnterior = reader["nome_completo"].ToString();
+                                usernameAnterior = reader["username"].ToString();
+                                emailAnterior = reader["email"].ToString();
+                                avatarAnterior = reader["avatar"].ToString();
+                            }
                         }
-                        
                     }
                 }
+            }
+            catch (MySqlException ex)
+            {
+                MessageBox.Show("Database error:\n" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error loading profile:\n" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            using (MySqlConnection connection =
-                new MySqlConnection(conexao))
+            if (string.IsNullOrWhiteSpace(name.Text) ||
+                string.IsNullOrWhiteSpace(username.Text) ||
+                string.IsNullOrWhiteSpace(email.Text) ||
+                string.IsNullOrWhiteSpace(avatarSelecionado))
             {
-                connection.Open();
+                MessageBox.Show("All fields must be filled in!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
 
-                // Verifica username e e-mail duplicados
-                string verificar = @"
-                    SELECT COUNT(*)
-                    FROM usuarios
-                    WHERE id != @id
-                    AND (username = @username OR email = @email)";
-
-                using (MySqlCommand command =
-                    new MySqlCommand(verificar, connection))
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(conexao))
                 {
-                    command.Parameters.AddWithValue("@id", idLog);
+                    connection.Open();
 
-                    command.Parameters.AddWithValue(
-                        "@username", username.Text);
+                    // Verifica username e e-mail duplicados
+                    string verificar = @"
+                        SELECT COUNT(*)
+                        FROM usuarios
+                        WHERE id != @id
+                        AND (username = @username OR email = @email)";
 
-                    command.Parameters.AddWithValue(
-                        "@email", email.Text);
-
-                    int quantidade =
-                        Convert.ToInt32(command.ExecuteScalar());
-
-                    if (quantidade > 0)
+                    using (MySqlCommand command = new MySqlCommand(verificar, connection))
                     {
-                        MessageBox.Show(
-                            "O nome de usuário ou e-mail já está cadastrado.",
-                            "Cadastro",
-                            MessageBoxButton.OK,
-                            MessageBoxImage.Warning);
+                        command.Parameters.AddWithValue("@id", idLog);
+                        command.Parameters.AddWithValue("@username", username.Text);
+                        command.Parameters.AddWithValue("@email", email.Text);
 
-                        return;
+                        int quantidade = Convert.ToInt32(command.ExecuteScalar());
+
+                        if (quantidade > 0)
+                        {
+                            MessageBox.Show("The username or email is already registered.", "Profile Update", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            return;
+                        }
+                    }
+
+                    // Atualiza o perfil
+                    string query = @"
+                        UPDATE usuarios
+                        SET
+                            nome_completo = @nome_completo,
+                            username = @username,
+                            email = @email,
+                            avatar = @avatar,
+                            data_alteracao = UTC_TIMESTAMP()
+                        WHERE id = @id";
+
+                    using (MySqlCommand cmd = new MySqlCommand(query, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@id", idLog);
+                        cmd.Parameters.AddWithValue("@nome_completo", name.Text.Trim());
+                        cmd.Parameters.AddWithValue("@username", username.Text.Trim());
+                        cmd.Parameters.AddWithValue("@email", email.Text.Trim());
+                        cmd.Parameters.AddWithValue("@avatar", avatarSelecionado);
+
+                        int linhasAlteradas = cmd.ExecuteNonQuery();
+
+                        if (linhasAlteradas > 0)
+                        {
+                            string novoNome = name.Text.Trim();
+                            string novoUsername = username.Text.Trim();
+                            string novoEmail = email.Text.Trim();
+
+                            // ==============================
+                            // AUDITORIA
+                            // ==============================
+
+                            string inserirAuditoria = @"
+                                INSERT INTO auditoria
+                                (
+                                    usuario_responsavel_id,
+                                    usuario_responsavel,
+                                    operacao,
+                                    registro_afetado,
+                                    valor_anterior,
+                                    novo_valor
+                                )
+                                VALUES
+                                (
+                                    @usuario_responsavel_id,
+                                    @usuario_responsavel,
+                                    @operacao,
+                                    @registro_afetado,
+                                    @valor_anterior,
+                                    @novo_valor
+                                )";
+
+                            // Nome alterado
+                            if (nomeAnterior != novoNome)
+                            {
+                                RegistrarAuditoria(connection, inserirAuditoria, "Profile update", "Name: " + nomeAnterior, "Name: " + novoNome, novoUsername);
+                            }
+
+                            // Username alterado
+                            if (usernameAnterior != novoUsername)
+                            {
+                                RegistrarAuditoria(connection, inserirAuditoria, "Profile update", "Username: " + usernameAnterior, "Username: " + novoUsername, novoUsername);
+                            }
+
+                            // E-mail alterado
+                            if (emailAnterior != novoEmail)
+                            {
+                                RegistrarAuditoria(connection, inserirAuditoria, "Profile update", "Email: " + emailAnterior, "Email: " + novoEmail, novoUsername);
+                            }
+
+                            // Avatar alterado
+                            if (avatarAnterior != avatarSelecionado)
+                            {
+                                RegistrarAuditoria(connection, inserirAuditoria, "Profile image update", "Avatar: " + avatarAnterior, "Avatar: " + avatarSelecionado, novoUsername);
+                            }
+
+                            MessageBox.Show("Profile updated successfully!", "Profile Update", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                            MainWindow abrir = new MainWindow(idLog);
+                            abrir.Show();
+                            this.Close();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Unable to update the profile.", "Profile Update", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        }
                     }
                 }
             }
-
-            using (MySqlConnection coon = new MySqlConnection(conexao))
+            catch (MySqlException ex)
             {
-                coon.Open();
+                MessageBox.Show("Database error:\n" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error updating profile:\n" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
 
-                string query = @"UPDATE usuarios SET nome_completo = @nome_completo, username = @username, email = @email, avatar = @avatar WHERE id = @id"; 
+        // ==============================
+        // REGISTRAR AUDITORIA
+        // ==============================
 
-                using (MySqlCommand cmd = new MySqlCommand(query, coon))
-                {
+        private void RegistrarAuditoria(MySqlConnection connection, string sql, string operacao, string valorAnterior, string novoValor, string usuarioAfetado)
+        {
+            using (MySqlCommand commandAuditoria = new MySqlCommand(sql, connection))
+            {
+                commandAuditoria.Parameters.AddWithValue("@usuario_responsavel_id", idLog);
+                commandAuditoria.Parameters.AddWithValue("@usuario_responsavel", usuarioAfetado);
+                commandAuditoria.Parameters.AddWithValue("@operacao", operacao);
+                commandAuditoria.Parameters.AddWithValue("@registro_afetado", "ID: " + idLog + " - User: " + usuarioAfetado);
+                commandAuditoria.Parameters.AddWithValue("@valor_anterior", valorAnterior);
+                commandAuditoria.Parameters.AddWithValue("@novo_valor", novoValor);
 
-                    if (string.IsNullOrWhiteSpace(name.Text) ||
-                        string.IsNullOrWhiteSpace(username.Text) ||
-                        string.IsNullOrWhiteSpace(email.Text) ||
-                        string.IsNullOrWhiteSpace(avatarSelecionado))
-                    {
-                        MessageBox.Show(
-                            "Todos os campos devem estar preenchidos!",
-                            "Atenção",
-                            MessageBoxButton.OK,
-                            MessageBoxImage.Warning);
-
-                        return;
-                    }
-
-                    cmd.Parameters.AddWithValue("@id",idLog);
-                    cmd.Parameters.AddWithValue("@nome_completo", name.Text);
-                    cmd.Parameters.AddWithValue("@username", username.Text);
-                    cmd.Parameters.AddWithValue("@email", email.Text);
-                    cmd.Parameters.AddWithValue("@avatar", avatarSelecionado);
-
-                    cmd.ExecuteNonQuery();
-
-                    MessageBox.Show("Cadastro realizado com sucesso");
-                    MainWindow abrir = new MainWindow(idLog);
-                    abrir.Show();
-                    this.Close();
-                }
-
+                commandAuditoria.ExecuteNonQuery();
             }
         }
     }
 }
+```
