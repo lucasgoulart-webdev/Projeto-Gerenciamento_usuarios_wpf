@@ -37,19 +37,12 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                     {
                         int quantidadeAdmins = Convert.ToInt32(command.ExecuteScalar());
 
-                        // If there are no administrators
                         if (quantidadeAdmins == 0)
                         {
-                            MessageBox.Show(
-                                "No administrator has been registered yet.\n" +
-                                "Register the first administrator to continue.",
-                                "First Access",
-                                MessageBoxButton.OK,
-                                MessageBoxImage.Information);
+                            MessageBox.Show("No administrator has been registered yet.\nRegister the first administrator to continue.", "First Access", MessageBoxButton.OK, MessageBoxImage.Information);
 
                             AdminCadastro adminCadastro = new AdminCadastro();
                             adminCadastro.Show();
-
                             this.Close();
                         }
                     }
@@ -67,7 +60,6 @@ namespace Projeto_Gerenciamento_usuarios_wpf
             string username = TxtUsername.Text.Trim();
             string senha = TxtPassword.Password;
 
-            // Checks empty fields
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(senha))
             {
                 MessageBox.Show("Invalid username or password.", "Login", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -101,12 +93,12 @@ namespace Projeto_Gerenciamento_usuarios_wpf
 
                         using (MySqlDataReader reader = command.ExecuteReader())
                         {
-                            // User does not exist
+                            // USER DOES NOT EXIST
                             if (!reader.Read())
                             {
                                 reader.Close();
 
-                                RegistrarEventoAutenticacao(connection, null, username, "Login attempt", "User not found");
+                                RegistrarEventoAutenticacao(connection, null, username, "Invalid login attempt", "User not found");
 
                                 MessageBox.Show("Invalid username or password.", "Login", MessageBoxButton.OK, MessageBoxImage.Warning);
                                 return;
@@ -119,28 +111,26 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                             string perfilAcesso = reader["perfil_acesso"].ToString();
                             int tentativas = Convert.ToInt32(reader["tentativas_login"]);
 
-                            // Checks if the user is active
+                            // USER IS DISABLED
                             if (status != "Ativo")
                             {
                                 reader.Close();
 
-                                RegistrarEventoAutenticacao(connection, id, username, "Login attempt", "User disabled");
+                                RegistrarEventoAutenticacao(connection, id, username, "Invalid login attempt", "User disabled");
 
                                 MessageBox.Show("This user is currently disabled.", "Login", MessageBoxButton.OK, MessageBoxImage.Warning);
                                 return;
                             }
 
-                            // Compares the password with the HASH
                             bool senhaCorreta = BCrypt.Net.BCrypt.Verify(senha, senhaHash);
 
                             // INCORRECT PASSWORD
                             if (!senhaCorreta)
                             {
                                 reader.Close();
-
                                 tentativas++;
 
-                                // 5 attempts = DISABLED
+                                // 5 ATTEMPTS = DISABLED
                                 if (tentativas >= 5)
                                 {
                                     string bloquear = @"
@@ -156,10 +146,7 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                                         update.ExecuteNonQuery();
                                     }
 
-                                    // ==============================
                                     // AUDIT - AUTOMATIC DEACTIVATION
-                                    // ==============================
-
                                     string inserirAuditoria = @"
                                         INSERT INTO auditoria
                                         (
@@ -188,11 +175,10 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                                         auditoria.Parameters.AddWithValue("@registro_afetado", "ID: " + id + " - User: " + username);
                                         auditoria.Parameters.AddWithValue("@valor_anterior", "Status: Active");
                                         auditoria.Parameters.AddWithValue("@novo_valor", "Status: Disabled");
-
                                         auditoria.ExecuteNonQuery();
                                     }
 
-                                    RegistrarEventoAutenticacao(connection, id, username, "Login attempt", "User disabled after 5 attempts");
+                                    RegistrarEventoAutenticacao(connection, id, username, "Account blocking", "User disabled after 5 attempts");
                                 }
                                 else
                                 {
@@ -208,7 +194,7 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                                         update.ExecuteNonQuery();
                                     }
 
-                                    RegistrarEventoAutenticacao(connection, id, username, "Login attempt", "Incorrect password");
+                                    RegistrarEventoAutenticacao(connection, id, username, "Invalid login attempt", "Incorrect password");
                                 }
 
                                 MessageBox.Show("Invalid username or password.", "Login", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -231,11 +217,10 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                                 update.ExecuteNonQuery();
                             }
 
-                            // Records successful login
-                            RegistrarEventoAutenticacao(connection, id, username, "Login", "Success");
+                            RegistrarEventoAutenticacao(connection, id, username, "Successful login", "Success");
 
                             // IDENTIFIES USER PERMISSIONS
-                            if (tipoUsuario == "Admin" || perfilAcesso == "Administrador")
+                            if (tipoUsuario == "Administrador" || perfilAcesso == "Administrador")
                             {
                                 HubAdmin hubAdmin = new HubAdmin(id);
                                 hubAdmin.Show();
@@ -257,10 +242,7 @@ namespace Projeto_Gerenciamento_usuarios_wpf
             }
         }
 
-        // ==============================
         // AUTHENTICATION EVENTS
-        // ==============================
-
         private void RegistrarEventoAutenticacao(MySqlConnection connection, int? usuarioId, string usuario, string tipoEvento, string resultado)
         {
             string sql = @"
@@ -293,7 +275,6 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                 command.Parameters.AddWithValue("@usuario", usuario);
                 command.Parameters.AddWithValue("@tipo_evento", tipoEvento);
                 command.Parameters.AddWithValue("@resultado", resultado);
-
                 command.ExecuteNonQuery();
             }
         }
