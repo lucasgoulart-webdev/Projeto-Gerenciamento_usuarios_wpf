@@ -67,7 +67,7 @@ namespace Projeto_Gerenciamento_usuarios_wpf
 
         private void Button_Click_5(object sender, RoutedEventArgs e)
         {
-            Logs criar5 = new Logs();
+            Logs criar5 = new Logs(idLogado);
             criar5.Show();
             this.Close();
         }
