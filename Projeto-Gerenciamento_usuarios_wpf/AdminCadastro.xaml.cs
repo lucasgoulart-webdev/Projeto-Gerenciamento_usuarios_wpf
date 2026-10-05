@@ -1,3 +1,4 @@
+```csharp
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -263,6 +264,84 @@ namespace Projeto_Gerenciamento_usuarios_wpf
                         command.ExecuteNonQuery();
                     }
 
+
+                    // =====================================================
+                    // AUDITORIA - CADASTRO DO USUÁRIO
+                    // =====================================================
+
+                    // Recupera o ID do administrador recém-criado
+                    long idUsuarioCriado = 0;
+
+                    string buscarId = @"
+                        SELECT LAST_INSERT_ID();";
+
+                    using (MySqlCommand command =
+                        new MySqlCommand(buscarId, connection))
+                    {
+                        idUsuarioCriado =
+                            Convert.ToInt64(command.ExecuteScalar());
+                    }
+
+                    // Registra a operação na tabela de auditoria
+                    string inserirAuditoria = @"
+                        INSERT INTO auditoria
+                        (
+                            usuario_responsavel_id,
+                            usuario_responsavel,
+                            operacao,
+                            registro_afetado,
+                            valor_anterior,
+                            novo_valor
+                        )
+                        VALUES
+                        (
+                            @usuario_responsavel_id,
+                            @usuario_responsavel,
+                            @operacao,
+                            @registro_afetado,
+                            @valor_anterior,
+                            @novo_valor
+                        )";
+
+                    using (MySqlCommand command =
+                        new MySqlCommand(inserirAuditoria, connection))
+                    {
+                        command.Parameters.AddWithValue(
+                            "@usuario_responsavel_id",
+                            idUsuarioCriado);
+
+                        command.Parameters.AddWithValue(
+                            "@usuario_responsavel",
+                            username);
+
+                        command.Parameters.AddWithValue(
+                            "@operacao",
+                            "Cadastro de usuário");
+
+                        command.Parameters.AddWithValue(
+                            "@registro_afetado",
+                            username);
+
+                        command.Parameters.AddWithValue(
+                            "@valor_anterior",
+                            DBNull.Value);
+
+                        // IMPORTANTE:
+                        // A senha NÃO é incluída na auditoria.
+                        command.Parameters.AddWithValue(
+                            "@novo_valor",
+                            "Nome: " + nome +
+                            "; Username: " + username +
+                            "; E-mail: " + email +
+                            "; Tipo: " + tipoUsuario +
+                            "; Perfil: " + perfilAcesso +
+                            "; Status: " + status +
+                            "; Avatar: " + avatar);
+
+                        command.ExecuteNonQuery();
+                    }
+
+
                     MessageBox.Show(
                         "Administrador cadastrado com sucesso!",
                         "Cadastro",
@@ -294,3 +373,4 @@ namespace Projeto_Gerenciamento_usuarios_wpf
         }
     }
 }
+```
